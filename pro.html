@@ -45,6 +45,7 @@ padding:10px;
 border:none;
 border-radius:6px;
 cursor:pointer;
+font-size:14px;
 }
 
 .copy{
@@ -57,6 +58,10 @@ background:#3498db;
 color:white;
 }
 
+button:hover{
+opacity:0.9;
+}
+
 .footer{
 margin-top:60px;
 padding:20px;
@@ -67,6 +72,8 @@ margin-left:auto;
 margin-right:auto;
 font-size:14px;
 }
+
+/* мобильная версия */
 
 @media(max-width:700px){
 
@@ -99,7 +106,7 @@ width:90%;
 
 <img src="qr1.png" width="220">
 
-<div class="info" id="info1"></div>
+<div class="info" id="info1">Loading...</div>
 
 <button class="copy" onclick="copyConfig(0)">Copy config</button>
 
@@ -114,7 +121,7 @@ width:90%;
 
 <img src="qr2.png" width="220">
 
-<div class="info" id="info2"></div>
+<div class="info" id="info2">Loading...</div>
 
 <button class="copy" onclick="copyConfig(1)">Copy config</button>
 
@@ -129,7 +136,7 @@ width:90%;
 
 <img src="qr3.png" width="220">
 
-<div class="info" id="info3"></div>
+<div class="info" id="info3">Loading...</div>
 
 <button class="copy" onclick="copyConfig(2)">Copy config</button>
 
@@ -148,13 +155,19 @@ fetch("pro_state.json")
 .then(r=>r.json())
 .then(data=>{
 
-servers=data.servers
+servers=data.servers || []
 
 let now=Math.floor(Date.now()/1000)
 
-data.servers.forEach((s,i)=>{
+servers.forEach((s,i)=>{
 
-let alive=now-s.start
+let ping = s.ping ? Math.round(s.ping*1000)+" ms" : "N/A"
+
+let country = s.country || "Unknown"
+
+let ip = s.ip || "Unknown"
+
+let alive=now-(s.start||now)
 
 let min=Math.floor(alive/60)
 
@@ -162,9 +175,9 @@ let hr=Math.floor(min/60)
 
 let text=
 
-"Ping: "+Math.round(s.ping*1000)+" ms<br>"+
-"Country: "+s.country+"<br>"+
-"Server: "+s.ip+"<br>"+
+"Ping: "+ping+"<br>"+
+"Country: "+country+"<br>"+
+"Server: "+ip+"<br>"+
 "Alive: "+hr+"h "+(min%60)+"m<br>"+
 "Status: ONLINE"
 
@@ -174,7 +187,10 @@ document.getElementById("info"+(i+1)).innerHTML=text
 
 })
 
+
 function copyConfig(index){
+
+if(!servers[index]) return
 
 navigator.clipboard.writeText(servers[index].config)
 
@@ -182,7 +198,10 @@ alert("Config copied")
 
 }
 
+
 function importVPN(index){
+
+if(!servers[index]) return
 
 window.location.href=servers[index].config
 
