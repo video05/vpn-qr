@@ -4,13 +4,12 @@ import time
 import socket
 import subprocess
 import qrcode
-import os
 
 URL="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 
 STATE_FILE="pro_state.json"
 
-MAX_SERVERS=50
+MAX_SERVERS=80
 
 
 def get_configs():
@@ -102,7 +101,7 @@ def create_config(uuid,host,port):
         json.dump(config,f)
 
 
-def test_vpn():
+def test_xray():
 
     try:
 
@@ -132,10 +131,12 @@ def make_qr(cfg,i):
 configs=get_configs()
 
 servers=[]
+xray_server=None
+
 
 for cfg in configs:
 
-    if len(servers)>=3:
+    if len(servers)>=3 and xray_server:
         break
 
     try:
@@ -147,35 +148,58 @@ for cfg in configs:
         if not ping:
             continue
 
-        create_config(uuid,host,port)
+        if len(servers)<3:
 
-        proc=subprocess.Popen(["./xray","run","-c","config.json"])
+            country,code=get_country(host)
 
-        time.sleep(2)
+            servers.append({
 
-        ok=test_vpn()
+                "config":cfg,
+                "ping":ping,
+                "country":country,
+                "flag":code.lower(),
+                "ip":host,
+                "start":int(time.time()),
+                "type":"tcp"
 
-        proc.kill()
+            })
 
-        if not ok:
-            continue
+        if not xray_server:
 
-        country,countryCode=get_country(host)
+            create_config(uuid,host,port)
 
-        servers.append({
+            proc=subprocess.Popen(["./xray","run","-c","config.json"])
 
-            "config":cfg,
-            "ping":ping,
-            "country":country,
-            "flag":countryCode.lower(),
-            "ip":host,
-            "start":int(time.time())
+            time.sleep(2)
 
-        })
+            ok=test_xray()
+
+            proc.kill()
+
+            if ok:
+
+                country,code=get_country(host)
+
+                xray_server={
+
+                    "config":cfg,
+                    "ping":ping,
+                    "country":country,
+                    "flag":code.lower(),
+                    "ip":host,
+                    "start":int(time.time()),
+                    "type":"xray"
+
+                }
 
     except:
 
         pass
+
+
+if xray_server:
+
+    servers.append(xray_server)
 
 
 for i,s in enumerate(servers,1):
