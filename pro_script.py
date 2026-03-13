@@ -2,32 +2,35 @@ import requests
 import json
 import time
 import socket
+import subprocess
 import qrcode
 import os
 
-URL = "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
+URL="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 
-STATE_FILE = "pro_state.json"
+STATE_FILE="pro_state.json"
+
+MAX_SERVERS=50
 
 
 def get_configs():
-    r = requests.get(URL, timeout=20)
-    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+    r=requests.get(URL,timeout=20)
+    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")][:MAX_SERVERS]
 
 
 def parse_vless(link):
 
-    link = link.replace("vless://","")
+    link=link.replace("vless://","")
 
-    uuid, rest = link.split("@")
+    uuid,rest=link.split("@")
 
-    host_port = rest.split("?")[0]
+    host_port=rest.split("?")[0]
 
-    host = host_port.split(":")[0]
+    host=host_port.split(":")[0]
 
-    port = int(host_port.split(":")[1])
+    port=int(host_port.split(":")[1])
 
-    return host, port
+    return uuid,host,port
 
 
 def tcp_ping(host,port):
@@ -40,9 +43,7 @@ def tcp_ping(host,port):
 
         sock.close()
 
-        latency=time.time()-start
-
-        return latency
+        return time.time()-start
 
     except:
 
@@ -53,27 +54,72 @@ def get_country(ip):
 
     try:
 
-        r = requests.get(f"http://ip-api.com/json/{ip}?fields=country", timeout=5)
+        r=requests.get(f"http://ip-api.com/json/{ip}?fields=country,countryCode",timeout=5)
 
-        data = r.json()
+        data=r.json()
 
-        if "country" in data:
-            return data["country"]
+        return data.get("country","Unknown"),data.get("countryCode","")
 
     except:
-        pass
 
-    return "Unknown"
+        return "Unknown",""
+
+
+def create_config(uuid,host,port):
+
+    config={
+        "log":{"loglevel":"error"},
+        "inbounds":[
+            {
+                "port":1080,
+                "protocol":"socks",
+                "settings":{"auth":"noauth"}
+            }
+        ],
+        "outbounds":[
+            {
+                "protocol":"vless",
+                "settings":{
+                    "vnext":[
+                        {
+                            "address":host,
+                            "port":port,
+                            "users":[
+                                {
+                                    "id":uuid,
+                                    "encryption":"none"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "streamSettings":{"network":"tcp"}
+            }
+        ]
+    }
+
+    with open("config.json","w") as f:
+        json.dump(config,f)
+
+
+def test_vpn():
 
     try:
 
-        r=requests.get(f"https://ipapi.co/{ip}/country_name/",timeout=5)
+        r=requests.get(
+            "https://1.1.1.1",
+            proxies={
+                "http":"socks5h://127.0.0.1:1080",
+                "https":"socks5h://127.0.0.1:1080"
+            },
+            timeout=6
+        )
 
-        return r.text.strip()
+        return r.status_code==200
 
     except:
 
-        return "Unknown"
+        return False
 
 
 def make_qr(cfg,i):
@@ -90,30 +136,42 @@ servers=[]
 for cfg in configs:
 
     if len(servers)>=3:
-
         break
 
     try:
 
-        host,port=parse_vless(cfg)
+        uuid,host,port=parse_vless(cfg)
 
-        latency=tcp_ping(host,port)
+        ping=tcp_ping(host,port)
 
-        if latency:
+        if not ping:
+            continue
 
-            servers.append({
+        create_config(uuid,host,port)
 
-                "config":cfg,
+        proc=subprocess.Popen(["./xray","run","-c","config.json"])
 
-                "ping":latency,
+        time.sleep(2)
 
-                "country":get_country(host),
+        ok=test_vpn()
 
-                "ip":host,
+        proc.kill()
 
-                "start":int(time.time())
+        if not ok:
+            continue
 
-            })
+        country,countryCode=get_country(host)
+
+        servers.append({
+
+            "config":cfg,
+            "ping":ping,
+            "country":country,
+            "flag":countryCode.lower(),
+            "ip":host,
+            "start":int(time.time())
+
+        })
 
     except:
 
