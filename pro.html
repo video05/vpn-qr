@@ -10,9 +10,9 @@
 
 body{
 font-family:sans-serif;
-text-align:center;
 background:#111;
 color:#eee;
+text-align:center;
 }
 
 .qr{
@@ -21,12 +21,12 @@ padding:20px;
 border:1px solid #333;
 border-radius:10px;
 display:inline-block;
-width:300px;
+width:280px;
 }
 
 .info{
-margin-top:10px;
 font-size:14px;
+margin-top:10px;
 color:#bbb;
 }
 
@@ -34,7 +34,6 @@ color:#bbb;
 margin-top:60px;
 padding:20px;
 border-top:1px solid #333;
-font-size:14px;
 color:#aaa;
 max-width:800px;
 margin-left:auto;
@@ -49,11 +48,11 @@ margin-right:auto;
 
 <h1>PRO VPN SERVERS</h1>
 
-<p>Auto checked every 5 minutes</p>
+<p>Servers tested every 5 minutes</p>
 
 <div class="qr">
 
-<h2>VPN #1</h2>
+<h2>VPN 1</h2>
 
 <img src="qr1.png" width="220">
 
@@ -61,10 +60,9 @@ margin-right:auto;
 
 </div>
 
-
 <div class="qr">
 
-<h2>VPN #2</h2>
+<h2>VPN 2</h2>
 
 <img src="qr2.png" width="220">
 
@@ -72,17 +70,15 @@ margin-right:auto;
 
 </div>
 
-
 <div class="qr">
 
-<h2>VPN #3</h2>
+<h2>VPN 3</h2>
 
 <img src="qr3.png" width="220">
 
 <div class="info" id="info3"></div>
 
 </div>
-
 
 <script>
 
@@ -100,26 +96,21 @@ let min=Math.floor(alive/60)
 
 let hr=Math.floor(min/60)
 
-let aliveText="Alive: "+hr+"h "+(min%60)+"m"
+let text=
 
-let ping=s.ping?("Ping: "+Math.round(s.ping*1000)+" ms"):"Ping: unknown"
+"Ping: "+Math.round(s.ping*1000)+" ms<br>"+
+"Country: "+s.country+"<br>"+
+"Server: "+s.ip+"<br>"+
+"Alive: "+hr+"h "+(min%60)+"m<br>"+
+"Status: ONLINE"
 
-let country=s.country?("Country: "+s.country):"Country: unknown"
-
-let ip=s.ip?("Server: "+s.ip):""
-
-let status="Status: ONLINE"
-
-document.getElementById("info"+(i+1)).innerHTML=
-
-ping+"<br>"+country+"<br>"+ip+"<br>"+aliveText+"<br>"+status
+document.getElementById("info"+(i+1)).innerHTML=text
 
 })
 
 })
 
 </script>
-
 
 <div class="footer">
 
@@ -130,13 +121,11 @@ ping+"<br>"+country+"<br>"+ip+"<br>"+aliveText+"<br>"+status
 </p>
 
 <p>
-Если кто-то предлагает вам купить доступ к этому сервису —
-это мошенники.
+Если кто-то предлагает вам купить доступ к этому сервису — это мошенники.
 </p>
 
 <p>
-Все VPN конфигурации взяты из открытых источников
-и публикуются здесь бесплатно.
+Все VPN конфигурации взяты из открытых источников и публикуются здесь бесплатно.
 </p>
 
 <p>
@@ -144,3 +133,7 @@ ping+"<br>"+country+"<br>"+ip+"<br>"+aliveText+"<br>"+status
 </p>
 
 </div>
+
+</body>
+
+</html>
