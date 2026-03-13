@@ -75,13 +75,12 @@ def make_qr(cfg,i):
 
 
 configs1=get_configs(URL1)
-
 configs2=get_configs(URL2)
 
 servers=[]
 
 
-# первые 3 VPN
+# VPN 1-3
 
 for cfg in configs1:
 
@@ -115,7 +114,7 @@ for cfg in configs1:
         pass
 
 
-# ещё 3 VPN
+# VPN 4-6
 
 for cfg in configs2:
 
@@ -154,9 +153,9 @@ for i,s in enumerate(servers,1):
     make_qr(s["config"],i)
 
 
-# telegram proxy
+# Telegram proxies
 
-tg_list=[]
+tg=[]
 
 try:
 
@@ -166,11 +165,24 @@ try:
 
     for line in lines:
 
-        if "tg://proxy" in line:
+        line=line.strip()
 
-            tg_list.append(line.strip())
+        if not line:
+            continue
 
-        if len(tg_list)>=3:
+        parts=line.split(":")
+
+        if len(parts)>=3:
+
+            server=parts[0]
+            port=parts[1]
+            secret=parts[2]
+
+            tg_link=f"tg://proxy?server={server}&port={port}&secret={secret}"
+
+            tg.append(tg_link)
+
+        if len(tg)>=3:
             break
 
 except:
@@ -183,7 +195,6 @@ with open(STATE_FILE,"w") as f:
     json.dump({
 
         "servers":servers,
-
-        "tg":tg_list
+        "tg":tg
 
     },f)
