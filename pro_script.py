@@ -8,6 +8,8 @@ URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/head
 
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
 
+TG_URL="https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/githubmirror/tg-proxy/all.txt"
+
 STATE_FILE="pro_state.json"
 
 
@@ -79,7 +81,7 @@ configs2=get_configs(URL2)
 servers=[]
 
 
-# первые 3 сервера из первого источника
+# первые 3 VPN
 
 for cfg in configs1:
 
@@ -113,7 +115,7 @@ for cfg in configs1:
         pass
 
 
-# следующие 3 сервера из второго источника
+# ещё 3 VPN
 
 for cfg in configs2:
 
@@ -152,6 +154,36 @@ for i,s in enumerate(servers,1):
     make_qr(s["config"],i)
 
 
+# telegram proxy
+
+tg_list=[]
+
+try:
+
+    r=requests.get(TG_URL,timeout=20)
+
+    lines=r.text.split("\n")
+
+    for line in lines:
+
+        if "tg://proxy" in line:
+
+            tg_list.append(line.strip())
+
+        if len(tg_list)>=3:
+            break
+
+except:
+
+    pass
+
+
 with open(STATE_FILE,"w") as f:
 
-    json.dump({"servers":servers},f)
+    json.dump({
+
+        "servers":servers,
+
+        "tg":tg_list
+
+    },f)
