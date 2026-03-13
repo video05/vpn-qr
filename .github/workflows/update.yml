@@ -9,20 +9,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-      - name: install
-        
-run: pip install requests qrcode pillow
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
 
-      - name: run script
+      - name: Install dependencies
+        run: pip install requests qrcode pillow
+
+      - name: Run script
         run: python script.py
 
-      - name: commit
+      - name: Commit files
         run: |
-          git config --global user.name "bot"
-          git config --global user.email "bot@github.com"
-          git add .
-          git commit -m "update vpn" || exit 0
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add qr.png config.txt || true
+          git commit -m "update vpn qr" || echo "no changes"
           git push
+          
