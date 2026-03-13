@@ -13,7 +13,8 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: install
-        run: pip install requests qrcode
+        
+run: pip install requests qrcode pillow
 
       - name: run script
         run: python script.py
