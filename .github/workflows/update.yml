@@ -1,0 +1,26 @@
+name: update vpn
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install
+        run: pip install requests qrcode
+
+      - name: run script
+        run: python script.py
+
+      - name: commit
+        run: |
+          git config --global user.name "bot"
+          git config --global user.email "bot@github.com"
+          git add .
+          git commit -m "update vpn" || exit 0
+          git push
