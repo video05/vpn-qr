@@ -4,45 +4,59 @@ import time
 import subprocess
 import qrcode
 import os
+import socket
 
-URL = "https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
+URL="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 
-STATE_FILE = "pro_state.json"
+STATE_FILE="pro_state.json"
+
+MAX_SERVERS=30
+XRAY_TEST_LIMIT=6
 
 
 def get_configs():
-    r = requests.get(URL, timeout=20)
-    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+    r=requests.get(URL,timeout=20)
+    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")][:MAX_SERVERS]
 
 
 def parse_vless(link):
 
-    link = link.replace("vless://", "")
+    link=link.replace("vless://","")
 
-    uuid, rest = link.split("@")
+    uuid,rest=link.split("@")
 
-    host_port = rest.split("?")[0]
+    host_port=rest.split("?")[0]
 
-    host = host_port.split(":")[0]
+    host=host_port.split(":")[0]
 
-    port = int(host_port.split(":")[1])
+    port=int(host_port.split(":")[1])
 
-    return uuid, host, port
+    return uuid,host,port
+
+
+def tcp_test(host,port):
+
+    try:
+        sock=socket.create_connection((host,port),2)
+        sock.close()
+        return True
+    except:
+        return False
 
 
 def get_country(ip):
 
     try:
-        r = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
-        j = r.json()
-        return j.get("country", "Unknown")
+        r=requests.get(f"http://ip-api.com/json/{ip}",timeout=5)
+        return r.json().get("country","Unknown")
     except:
         return "Unknown"
 
 
-def create_config(uuid, host, port):
+def create_config(uuid,host,port):
 
-    config = {
+    config={
+        "log":{"loglevel":"error"},
         "inbounds":[
             {
                 "port":1080,
@@ -67,9 +81,7 @@ def create_config(uuid, host, port):
                         }
                     ]
                 },
-                "streamSettings":{
-                    "network":"tcp"
-                }
+                "streamSettings":{"network":"tcp"}
             }
         ]
     }
@@ -90,7 +102,7 @@ def test_vpn():
                 "http":"socks5h://127.0.0.1:1080",
                 "https":"socks5h://127.0.0.1:1080"
             },
-            timeout=8
+            timeout=6
         )
 
         latency=time.time()-start
@@ -107,7 +119,6 @@ def test_vpn():
 def load_state():
 
     if os.path.exists(STATE_FILE):
-
         with open(STATE_FILE) as f:
             return json.load(f)
 
@@ -134,69 +145,60 @@ now=int(time.time())
 
 alive=[]
 
+
 # проверяем старые серверы
 
 for s in state["servers"]:
 
-    try:
+    uuid,host,port=parse_vless(s["config"])
 
-        uuid,host,port=parse_vless(s["config"])
-
-        create_config(uuid,host,port)
-
-        proc=subprocess.Popen(["./xray","run","-c","config.json"])
-
-        time.sleep(3)
-
-        latency=test_vpn()
-
-        proc.kill()
-
-        if latency:
-
-            s["ping"]=latency
-            alive.append(s)
-
-    except:
-        pass
+    if tcp_test(host,port):
+        alive.append(s)
 
 
-# ищем новые
+# быстрый TCP фильтр
+
+candidates=[]
 
 for cfg in configs:
+
+    uuid,host,port=parse_vless(cfg)
+
+    if tcp_test(host,port):
+        candidates.append(cfg)
+
+    if len(candidates)>=XRAY_TEST_LIMIT:
+        break
+
+
+# Xray тест
+
+for cfg in candidates:
 
     if len(alive)>=3:
         break
 
-    if any(cfg==s["config"] for s in alive):
-        continue
+    uuid,host,port=parse_vless(cfg)
 
-    try:
+    create_config(uuid,host,port)
 
-        uuid,host,port=parse_vless(cfg)
+    proc=subprocess.Popen(["./xray","run","-c","config.json"])
 
-        create_config(uuid,host,port)
+    time.sleep(2)
 
-        proc=subprocess.Popen(["./xray","run","-c","config.json"])
+    latency=test_vpn()
 
-        time.sleep(3)
+    proc.kill()
 
-        latency=test_vpn()
+    if latency:
 
-        proc.kill()
-
-        if latency:
-
-            alive.append({
-                "config":cfg,
-                "start":now,
-                "ping":latency,
-                "country":get_country(host),
-                "ip":host
-            })
-
-    except:
-        pass
+        alive.append({
+            "config":cfg,
+            "start":now,
+            "ping":latency,
+            "country":get_country(host),
+            "ip":host
+        })
 
 
 alive=alive[:3]
