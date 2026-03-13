@@ -19,11 +19,20 @@ jobs:
         with:
           python-version: "3.x"
 
-      - run: pip install requests qrcode pillow
+      - name: Install dependencies
+        run: pip install requests qrcode pillow pysocks
 
-      - run: python pro_script.py
+      - name: Download Xray
+        run: |
+          wget https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
+          unzip Xray-linux-64.zip
+          chmod +x xray
 
-      - run: |
+      - name: Run script
+        run: python pro_script.py
+
+      - name: Commit changes
+        run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add .
