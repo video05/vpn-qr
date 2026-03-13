@@ -2,19 +2,20 @@ import requests
 import json
 import time
 import socket
-import subprocess
 import qrcode
 
-URL="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
+URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
+
+URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
 
 STATE_FILE="pro_state.json"
 
-MAX_SERVERS=80
 
+def get_configs(url):
 
-def get_configs():
-    r=requests.get(URL,timeout=20)
-    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")][:MAX_SERVERS]
+    r=requests.get(url,timeout=20)
+
+    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
 
 
 def parse_vless(link):
@@ -29,7 +30,7 @@ def parse_vless(link):
 
     port=int(host_port.split(":")[1])
 
-    return uuid,host,port
+    return host,port
 
 
 def tcp_ping(host,port):
@@ -64,63 +65,6 @@ def get_country(ip):
         return "Unknown",""
 
 
-def create_config(uuid,host,port):
-
-    config={
-        "log":{"loglevel":"error"},
-        "inbounds":[
-            {
-                "port":1080,
-                "protocol":"socks",
-                "settings":{"auth":"noauth"}
-            }
-        ],
-        "outbounds":[
-            {
-                "protocol":"vless",
-                "settings":{
-                    "vnext":[
-                        {
-                            "address":host,
-                            "port":port,
-                            "users":[
-                                {
-                                    "id":uuid,
-                                    "encryption":"none"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "streamSettings":{"network":"tcp"}
-            }
-        ]
-    }
-
-    with open("config.json","w") as f:
-        json.dump(config,f)
-
-
-def test_xray():
-
-    try:
-
-        r=requests.get(
-            "https://1.1.1.1",
-            proxies={
-                "http":"socks5h://127.0.0.1:1080",
-                "https":"socks5h://127.0.0.1:1080"
-            },
-            timeout=6
-        )
-
-        return r.status_code==200
-
-    except:
-
-        return False
-
-
 def make_qr(cfg,i):
 
     img=qrcode.make(cfg)
@@ -128,78 +72,79 @@ def make_qr(cfg,i):
     img.save(f"qr{i}.png")
 
 
-configs=get_configs()
+configs1=get_configs(URL1)
+
+configs2=get_configs(URL2)
 
 servers=[]
-xray_server=None
 
 
-for cfg in configs:
+# первые 3 сервера из первого источника
 
-    if len(servers)>=3 and xray_server:
+for cfg in configs1:
+
+    if len(servers)>=3:
         break
 
     try:
 
-        uuid,host,port=parse_vless(cfg)
+        host,port=parse_vless(cfg)
 
         ping=tcp_ping(host,port)
 
         if not ping:
             continue
 
-        if len(servers)<3:
+        country,code=get_country(host)
 
-            country,code=get_country(host)
+        servers.append({
 
-            servers.append({
+            "config":cfg,
+            "ping":ping,
+            "country":country,
+            "flag":code.lower(),
+            "ip":host,
+            "start":int(time.time())
 
-                "config":cfg,
-                "ping":ping,
-                "country":country,
-                "flag":code.lower(),
-                "ip":host,
-                "start":int(time.time()),
-                "type":"tcp"
-
-            })
-
-        if not xray_server:
-
-            create_config(uuid,host,port)
-
-            proc=subprocess.Popen(["./xray","run","-c","config.json"])
-
-            time.sleep(2)
-
-            ok=test_xray()
-
-            proc.kill()
-
-            if ok:
-
-                country,code=get_country(host)
-
-                xray_server={
-
-                    "config":cfg,
-                    "ping":ping,
-                    "country":country,
-                    "flag":code.lower(),
-                    "ip":host,
-                    "start":int(time.time()),
-                    "type":"xray"
-
-                }
+        })
 
     except:
 
         pass
 
 
-if xray_server:
+# следующие 3 сервера из второго источника
 
-    servers.append(xray_server)
+for cfg in configs2:
+
+    if len(servers)>=6:
+        break
+
+    try:
+
+        host,port=parse_vless(cfg)
+
+        ping=tcp_ping(host,port)
+
+        if not ping:
+            continue
+
+        country,code=get_country(host)
+
+        servers.append({
+
+            "config":cfg,
+            "ping":ping,
+            "country":country,
+            "flag":code.lower(),
+            "ip":host,
+            "start":int(time.time())
+
+        })
+
+    except:
+
+        pass
 
 
 for i,s in enumerate(servers,1):
