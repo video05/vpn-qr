@@ -5,9 +5,6 @@ on:
   schedule:
     - cron: "*/5 * * * *"
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,33 +12,38 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
 
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.11"
 
-      - name: Install Python packages
+      - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install requests qrcode pillow pysocks
 
       - name: Download Xray
         run: |
-          wget https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
+          wget -q https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
           unzip -o Xray-linux-64.zip
           chmod +x xray
 
-      - name: Run script
-        run: python pro_script.py
+      - name: Run VPN checker
+        run: |
+          python pro_script.py || true
 
-      - name: Commit changes
+      - name: Commit results
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add .
-          git commit -m "update pro vpn" || echo "no changes"
-          git push
+          git diff --cached --quiet || git commit -m "update pro vpn"
+          git push || true
