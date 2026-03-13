@@ -13,21 +13,23 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: Setup python
-        uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: Install python libs
-        run: pip install requests qrcode pillow pysocks
+      - name: Install Python libs
+        run: |
+          pip install requests qrcode pillow pysocks
 
-      - name: Install Xray
+      - name: Download Xray
         run: |
           wget https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
-          unzip Xray-linux-64.zip
+          unzip -o Xray-linux-64.zip
           chmod +x xray
 
       - name: Run script
