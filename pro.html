@@ -62,6 +62,11 @@ button:hover{
 opacity:0.9;
 }
 
+.flag{
+vertical-align:middle;
+margin-right:4px;
+}
+
 .footer{
 margin-top:60px;
 padding:20px;
@@ -155,17 +160,25 @@ fetch("pro_state.json")
 .then(r=>r.json())
 .then(data=>{
 
-servers=data.servers || []
+servers=data.servers||[]
 
 let now=Math.floor(Date.now()/1000)
 
 servers.forEach((s,i)=>{
 
-let ping = s.ping ? Math.round(s.ping*1000)+" ms" : "N/A"
+let ping=s.ping?Math.round(s.ping*1000)+" ms":"N/A"
 
-let country = s.country || "Unknown"
+let country=s.country||"Unknown"
 
-let ip = s.ip || "Unknown"
+let ip=s.ip||"Unknown"
+
+let flag=""
+
+if(s.flag){
+
+flag=`<img class="flag" src="https://flagcdn.com/24x18/${s.flag}.png">`
+
+}
 
 let alive=now-(s.start||now)
 
@@ -176,7 +189,7 @@ let hr=Math.floor(min/60)
 let text=
 
 "Ping: "+ping+"<br>"+
-"Country: "+country+"<br>"+
+"Country: "+flag+" "+country+"<br>"+
 "Server: "+ip+"<br>"+
 "Alive: "+hr+"h "+(min%60)+"m<br>"+
 "Status: ONLINE"
