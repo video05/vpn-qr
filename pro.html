@@ -1,33 +1,57 @@
 <html>
 <head>
+
 <title>PRO VPN</title>
+
 <meta http-equiv="refresh" content="60">
+
 <style>
-body { font-family:sans-serif; text-align:center }
-.qr { margin:30px }
+
+body{
+font-family:sans-serif;
+text-align:center;
+}
+
+.qr{
+margin:40px;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<h1>PRO VPN</h1>
+<h1>PRO VPN SERVERS</h1>
 
 <div class="qr">
-<h3>VPN #1</h3>
-<img src="qr1.png" width="250">
+
+<h2>VPN 1</h2>
+
+<img src="qr1.png" width="260">
+
 <p id="t1"></p>
+
 </div>
 
 <div class="qr">
-<h3>VPN #2</h3>
-<img src="qr2.png" width="250">
+
+<h2>VPN 2</h2>
+
+<img src="qr2.png" width="260">
+
 <p id="t2"></p>
+
 </div>
 
 <div class="qr">
-<h3>VPN #3</h3>
-<img src="qr3.png" width="250">
+
+<h2>VPN 3</h2>
+
+<img src="qr3.png" width="260">
+
 <p id="t3"></p>
+
 </div>
 
 <script>
@@ -36,18 +60,17 @@ fetch("pro_state.json")
 .then(r=>r.json())
 .then(data=>{
 
-let now = Math.floor(Date.now()/1000)
+let now=Math.floor(Date.now()/1000)
 
 data.servers.forEach((s,i)=>{
 
-let alive = now - s.start
+let alive=now-s.start
 
-let min = Math.floor(alive/60)
-let hr = Math.floor(min/60)
+let min=Math.floor(alive/60)
 
-let text = "Alive: "+hr+"h "+(min%60)+"m"
+let hr=Math.floor(min/60)
 
-document.getElementById("t"+(i+1)).innerText=text
+document.getElementById("t"+(i+1)).innerText="Alive: "+hr+"h "+(min%60)+"m"
 
 })
 
