@@ -1,7 +1,8 @@
 <html>
+
 <head>
 
-<title>PRO VPN</title>
+<title>PRO VPN SERVERS</title>
 
 <meta http-equiv="refresh" content="60">
 
@@ -10,10 +11,34 @@
 body{
 font-family:sans-serif;
 text-align:center;
+background:#111;
+color:#eee;
 }
 
 .qr{
 margin:40px;
+padding:20px;
+border:1px solid #333;
+border-radius:10px;
+display:inline-block;
+width:300px;
+}
+
+.info{
+margin-top:10px;
+font-size:14px;
+color:#bbb;
+}
+
+.footer{
+margin-top:60px;
+padding:20px;
+border-top:1px solid #333;
+font-size:14px;
+color:#aaa;
+max-width:800px;
+margin-left:auto;
+margin-right:auto;
 }
 
 </style>
@@ -24,35 +49,40 @@ margin:40px;
 
 <h1>PRO VPN SERVERS</h1>
 
-<div class="qr">
-
-<h2>VPN 1</h2>
-
-<img src="qr1.png" width="260">
-
-<p id="t1"></p>
-
-</div>
+<p>Auto checked every 5 minutes</p>
 
 <div class="qr">
 
-<h2>VPN 2</h2>
+<h2>VPN #1</h2>
 
-<img src="qr2.png" width="260">
+<img src="qr1.png" width="220">
 
-<p id="t2"></p>
+<div class="info" id="info1"></div>
 
 </div>
+
 
 <div class="qr">
 
-<h2>VPN 3</h2>
+<h2>VPN #2</h2>
 
-<img src="qr3.png" width="260">
+<img src="qr2.png" width="220">
 
-<p id="t3"></p>
+<div class="info" id="info2"></div>
 
 </div>
+
+
+<div class="qr">
+
+<h2>VPN #3</h2>
+
+<img src="qr3.png" width="220">
+
+<div class="info" id="info3"></div>
+
+</div>
+
 
 <script>
 
@@ -70,7 +100,19 @@ let min=Math.floor(alive/60)
 
 let hr=Math.floor(min/60)
 
-document.getElementById("t"+(i+1)).innerText="Alive: "+hr+"h "+(min%60)+"m"
+let aliveText="Alive: "+hr+"h "+(min%60)+"m"
+
+let ping=s.ping?("Ping: "+Math.round(s.ping*1000)+" ms"):"Ping: unknown"
+
+let country=s.country?("Country: "+s.country):"Country: unknown"
+
+let ip=s.ip?("Server: "+s.ip):""
+
+let status="Status: ONLINE"
+
+document.getElementById("info"+(i+1)).innerHTML=
+
+ping+"<br>"+country+"<br>"+ip+"<br>"+aliveText+"<br>"+status
 
 })
 
@@ -78,5 +120,31 @@ document.getElementById("t"+(i+1)).innerText="Alive: "+hr+"h "+(min%60)+"m"
 
 </script>
 
+
+<div class="footer">
+
+<h3>Important</h3>
+
+<p>
+This website is completely free.
+</p>
+
+<p>
+If someone offered to sell you access to this service,
+that person is a scammer.
+</p>
+
+<p>
+All VPN configurations are taken from public sources and
+are provided here free of charge.
+</p>
+
+<p>
+Do not pay anyone for access to this page.
+</p>
+
+</div>
+
 </body>
+
 </html>
