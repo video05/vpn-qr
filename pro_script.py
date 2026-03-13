@@ -153,10 +153,34 @@ for s in state["servers"]:
     uuid,host,port=parse_vless(s["config"])
 
     if tcp_test(host,port):
-        alive.append(s)
+
+        latency=None
+
+        try:
+
+            create_config(uuid,host,port)
+
+            proc=subprocess.Popen(["./xray","run","-c","config.json"])
+
+            time.sleep(2)
+
+            latency=test_vpn()
+
+            proc.kill()
+
+        except:
+            pass
+
+        if latency:
+
+            s["ping"]=latency
+            s["country"]=get_country(host)
+            s["ip"]=host
+
+            alive.append(s)
 
 
-# быстрый TCP фильтр
+# TCP фильтр
 
 candidates=[]
 
