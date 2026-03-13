@@ -39,11 +39,6 @@ margin-top:10px;
 color:#bbb;
 }
 
-.clientPing{
-margin-top:4px;
-color:#7dd3fc;
-}
-
 button{
 margin-top:8px;
 padding:10px;
@@ -111,8 +106,6 @@ width:90%;
 
 <div class="info" id="info1">Loading...</div>
 
-<div class="clientPing" id="client1"></div>
-
 <button class="copy" onclick="copyConfig(0)">Copy config</button>
 
 </div>
@@ -125,8 +118,6 @@ width:90%;
 <img src="qr2.png" width="220">
 
 <div class="info" id="info2">Loading...</div>
-
-<div class="clientPing" id="client2"></div>
 
 <button class="copy" onclick="copyConfig(1)">Copy config</button>
 
@@ -141,24 +132,7 @@ width:90%;
 
 <div class="info" id="info3">Loading...</div>
 
-<div class="clientPing" id="client3"></div>
-
 <button class="copy" onclick="copyConfig(2)">Copy config</button>
-
-</div>
-
-
-<div class="qr">
-
-<h2>XRAY VERIFIED ⭐</h2>
-
-<img src="qr4.png" width="220">
-
-<div class="info" id="info4">Loading...</div>
-
-<div class="clientPing" id="client4"></div>
-
-<button class="copy" onclick="copyConfig(3)">Copy config</button>
 
 </div>
 
@@ -197,53 +171,19 @@ let min=Math.floor(alive/60)
 
 let hr=Math.floor(min/60)
 
-let type=""
-
-if(s.type==="xray"){
-type="<br>Verification: XRAY VERIFIED ⭐"
-}
-
 let text=
 
 "Ping: "+ping+"<br>"+
 "Country: "+flag+" "+country+"<br>"+
 "Server: "+ip+"<br>"+
 "Alive: "+hr+"h "+(min%60)+"m<br>"+
-"Status: ONLINE"+type
+"Status: ONLINE"
 
 document.getElementById("info"+(i+1)).innerHTML=text
 
-measureClientPing(ip,i)
-
 })
 
 })
-
-
-async function measureClientPing(ip,index){
-
-if(!ip || ip==="Unknown") return
-
-let start=performance.now()
-
-try{
-
-await fetch("https://"+ip,{
-mode:"no-cors",
-cache:"no-store"
-})
-
-let latency=Math.round(performance.now()-start)
-
-document.getElementById("client"+(index+1)).innerText="Client latency: "+latency+" ms"
-
-}catch{
-
-document.getElementById("client"+(index+1)).innerText="Client latency: blocked"
-
-}
-
-}
 
 
 function copyConfig(index){
