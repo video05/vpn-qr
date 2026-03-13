@@ -147,6 +147,21 @@ width:90%;
 
 </div>
 
+
+<div class="qr">
+
+<h2>XRAY VERIFIED ⭐</h2>
+
+<img src="qr4.png" width="220">
+
+<div class="info" id="info4">Loading...</div>
+
+<div class="clientPing" id="client4"></div>
+
+<button class="copy" onclick="copyConfig(3)">Copy config</button>
+
+</div>
+
 </div>
 
 
@@ -182,13 +197,19 @@ let min=Math.floor(alive/60)
 
 let hr=Math.floor(min/60)
 
+let type=""
+
+if(s.type==="xray"){
+type="<br>Verification: XRAY VERIFIED ⭐"
+}
+
 let text=
 
 "Ping: "+ping+"<br>"+
 "Country: "+flag+" "+country+"<br>"+
 "Server: "+ip+"<br>"+
 "Alive: "+hr+"h "+(min%60)+"m<br>"+
-"Status: ONLINE"
+"Status: ONLINE"+type
 
 document.getElementById("info"+(i+1)).innerHTML=text
 
