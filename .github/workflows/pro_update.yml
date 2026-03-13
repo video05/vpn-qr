@@ -13,16 +13,18 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
+      - name: Setup python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.x"
 
-      - name: Install dependencies
+      - name: Install python libs
         run: pip install requests qrcode pillow pysocks
 
-      - name: Download Xray
+      - name: Install Xray
         run: |
           wget https://github.com/XTLS/Xray-core/releases/latest/download/Xray-linux-64.zip
           unzip Xray-linux-64.zip
@@ -31,7 +33,7 @@ jobs:
       - name: Run script
         run: python pro_script.py
 
-      - name: Commit changes
+      - name: Commit results
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
