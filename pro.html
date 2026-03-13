@@ -53,6 +53,11 @@ background:#2ecc71;
 color:white;
 }
 
+.tg{
+background:#229ED9;
+color:white;
+}
+
 button:hover{
 opacity:0.9;
 }
@@ -121,14 +126,12 @@ width:90%;
 
 <div class="container">
 
-
 <div class="qr">
 <h2>VPN 1</h2>
 <img src="qr1.png" width="220">
 <div class="info" id="info1">Loading...</div>
 <button class="copy" onclick="copyConfig(0)">Copy config</button>
 </div>
-
 
 <div class="qr">
 <h2>VPN 2</h2>
@@ -137,14 +140,12 @@ width:90%;
 <button class="copy" onclick="copyConfig(1)">Copy config</button>
 </div>
 
-
 <div class="qr">
 <h2>VPN 3</h2>
 <img src="qr3.png" width="220">
 <div class="info" id="info3">Loading...</div>
 <button class="copy" onclick="copyConfig(2)">Copy config</button>
 </div>
-
 
 <div class="qr">
 <h2 style="color:#ff4d4d">VPN 4</h2>
@@ -153,7 +154,6 @@ width:90%;
 <button class="copy" onclick="copyConfig(3)">Copy config</button>
 </div>
 
-
 <div class="qr">
 <h2 style="color:#ff4d4d">VPN 5</h2>
 <img src="qr5.png" width="220">
@@ -161,14 +161,19 @@ width:90%;
 <button class="copy" onclick="copyConfig(4)">Copy config</button>
 </div>
 
-
 <div class="qr">
 <h2 style="color:#ff4d4d">VPN 6</h2>
 <img src="qr6.png" width="220">
 <div class="info" id="info6">Loading...</div>
 <button class="copy" onclick="copyConfig(5)">Copy config</button>
-</div>
 
+<br><br>
+
+<button class="tg" onclick="openTG(0)">Telegram Proxy 1</button>
+<button class="tg" onclick="openTG(1)">Telegram Proxy 2</button>
+<button class="tg" onclick="openTG(2)">Telegram Proxy 3</button>
+
+</div>
 
 </div>
 
@@ -176,21 +181,21 @@ width:90%;
 <script>
 
 let servers=[]
+let tg=[]
 
 fetch("pro_state.json")
 .then(r=>r.json())
 .then(data=>{
 
 servers=data.servers||[]
+tg=data.tg||[]
 
 let now=Math.floor(Date.now()/1000)
 
 servers.forEach((s,i)=>{
 
 let ping=s.ping?Math.round(s.ping*1000)+" ms":"N/A"
-
 let country=s.country||"Unknown"
-
 let ip=s.ip||"Unknown"
 
 let flag=""
@@ -200,9 +205,7 @@ flag=`<img class="flag" src="https://flagcdn.com/24x18/${s.flag}.png">`
 }
 
 let alive=now-(s.start||now)
-
 let min=Math.floor(alive/60)
-
 let hr=Math.floor(min/60)
 
 let text=
@@ -227,6 +230,15 @@ if(!servers[index]) return
 navigator.clipboard.writeText(servers[index].config)
 
 alert("Config copied")
+
+}
+
+
+function openTG(index){
+
+if(!tg[index]) return
+
+window.location.href=tg[index]
 
 }
 
