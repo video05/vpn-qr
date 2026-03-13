@@ -53,6 +53,20 @@ def get_country(ip):
 
     try:
 
+        r = requests.get(f"http://ip-api.com/json/{ip}?fields=country", timeout=5)
+
+        data = r.json()
+
+        if "country" in data:
+            return data["country"]
+
+    except:
+        pass
+
+    return "Unknown"
+
+    try:
+
         r=requests.get(f"https://ipapi.co/{ip}/country_name/",timeout=5)
 
         return r.text.strip()
