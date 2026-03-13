@@ -39,6 +39,11 @@ margin-top:10px;
 color:#bbb;
 }
 
+.clientPing{
+margin-top:4px;
+color:#7dd3fc;
+}
+
 button{
 margin-top:8px;
 padding:10px;
@@ -50,11 +55,6 @@ font-size:14px;
 
 .copy{
 background:#2ecc71;
-color:white;
-}
-
-.import{
-background:#3498db;
 color:white;
 }
 
@@ -77,8 +77,6 @@ margin-left:auto;
 margin-right:auto;
 font-size:14px;
 }
-
-/* мобильная версия */
 
 @media(max-width:700px){
 
@@ -113,9 +111,9 @@ width:90%;
 
 <div class="info" id="info1">Loading...</div>
 
-<button class="copy" onclick="copyConfig(0)">Copy config</button>
+<div class="clientPing" id="client1"></div>
 
-<button class="import" onclick="importVPN(0)">Import to V2Ray</button>
+<button class="copy" onclick="copyConfig(0)">Copy config</button>
 
 </div>
 
@@ -128,9 +126,9 @@ width:90%;
 
 <div class="info" id="info2">Loading...</div>
 
-<button class="copy" onclick="copyConfig(1)">Copy config</button>
+<div class="clientPing" id="client2"></div>
 
-<button class="import" onclick="importVPN(1)">Import to V2Ray</button>
+<button class="copy" onclick="copyConfig(1)">Copy config</button>
 
 </div>
 
@@ -143,9 +141,9 @@ width:90%;
 
 <div class="info" id="info3">Loading...</div>
 
-<button class="copy" onclick="copyConfig(2)">Copy config</button>
+<div class="clientPing" id="client3"></div>
 
-<button class="import" onclick="importVPN(2)">Import to V2Ray</button>
+<button class="copy" onclick="copyConfig(2)">Copy config</button>
 
 </div>
 
@@ -175,9 +173,7 @@ let ip=s.ip||"Unknown"
 let flag=""
 
 if(s.flag){
-
 flag=`<img class="flag" src="https://flagcdn.com/24x18/${s.flag}.png">`
-
 }
 
 let alive=now-(s.start||now)
@@ -196,9 +192,37 @@ let text=
 
 document.getElementById("info"+(i+1)).innerHTML=text
 
+measureClientPing(ip,i)
+
 })
 
 })
+
+
+async function measureClientPing(ip,index){
+
+if(!ip || ip==="Unknown") return
+
+let start=performance.now()
+
+try{
+
+await fetch("https://"+ip,{
+mode:"no-cors",
+cache:"no-store"
+})
+
+let latency=Math.round(performance.now()-start)
+
+document.getElementById("client"+(index+1)).innerText="Client latency: "+latency+" ms"
+
+}catch{
+
+document.getElementById("client"+(index+1)).innerText="Client latency: blocked"
+
+}
+
+}
 
 
 function copyConfig(index){
@@ -208,15 +232,6 @@ if(!servers[index]) return
 navigator.clipboard.writeText(servers[index].config)
 
 alert("Config copied")
-
-}
-
-
-function importVPN(index){
-
-if(!servers[index]) return
-
-window.location.href=servers[index].config
 
 }
 
