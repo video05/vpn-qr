@@ -34,4 +34,3 @@ jobs:
           git add qr.png config.txt || true
           git commit -m "update vpn qr" || echo "no changes"
           git push
-          
