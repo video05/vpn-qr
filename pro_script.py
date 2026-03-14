@@ -3,7 +3,6 @@ import json
 import time
 import socket
 import qrcode
-import re
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
@@ -143,7 +142,7 @@ for i,s in enumerate(servers,1):
     make_qr(s["config"],i)
 
 
-# Telegram proxy parsing
+# Telegram SOCKS proxies
 
 tg=[]
 
@@ -158,28 +157,18 @@ try:
         if not line:
             continue
 
-        # если уже готовая tg ссылка
-        if line.startswith("tg://") or "t.me/proxy" in line:
+        parts=line.split(":")
 
-            tg.append(line)
+        if len(parts)>=4:
 
-        # если формат server=IP&port=PORT&secret=SECRET
-        elif "server=" in line and "port=" in line and "secret=" in line:
+            ip=parts[0]
+            port=parts[1]
+            user=parts[2]
+            password=parts[3]
 
-            tg.append("https://t.me/proxy?"+line)
+            link=f"https://t.me/socks?server={ip}&port={port}&user={user}&pass={password}"
 
-        # если формат IP:PORT:SECRET
-        else:
-
-            parts=line.split(":")
-
-            if len(parts)>=3:
-
-                ip=parts[0]
-                port=parts[1]
-                secret=parts[2]
-
-                tg.append(f"https://t.me/proxy?server={ip}&port={port}&secret={secret}")
+            tg.append(link)
 
         if len(tg)>=3:
             break
