@@ -9,12 +9,17 @@ URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/m
 
 STATE_FILE="pro_state.json"
 
+MAX_CHECK=200
+MAX_SERVERS=20
+
 
 def get_configs(url):
 
-    r=requests.get(url,timeout=20)
-
-    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+    try:
+        r=requests.get(url,timeout=20)
+        return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+    except:
+        return []
 
 
 def parse_vless(link):
@@ -42,7 +47,12 @@ def tcp_ping(host,port):
 
         sock.close()
 
-        return time.time()-start
+        ping=time.time()-start
+
+        if ping>5:
+            return None
+
+        return ping
 
     except:
 
@@ -55,7 +65,7 @@ def get_country(ip):
 
         r=requests.get(
             f"http://ip-api.com/json/{ip}?fields=country,countryCode",
-            timeout=5
+            timeout=4
         )
 
         data=r.json()
@@ -77,15 +87,15 @@ def make_qr(cfg,i):
 configs1=get_configs(URL1)
 configs2=get_configs(URL2)
 
+configs=configs1+configs2
+
+configs=configs[:MAX_CHECK]
+
+
 servers=[]
 
 
-# первые 10 серверов из первого источника
-
-for cfg in configs1:
-
-    if len(servers)>=10:
-        break
+for cfg in configs:
 
     try:
 
@@ -93,7 +103,7 @@ for cfg in configs1:
 
         ping=tcp_ping(host,port)
 
-        if not ping:
+        if ping is None:
             continue
 
         country,code=get_country(host)
@@ -114,38 +124,10 @@ for cfg in configs1:
         pass
 
 
-# следующие 10 серверов из второго источника
+servers=sorted(servers,key=lambda x:x["ping"])
 
-for cfg in configs2:
 
-    if len(servers)>=20:
-        break
-
-    try:
-
-        host,port=parse_vless(cfg)
-
-        ping=tcp_ping(host,port)
-
-        if not ping:
-            continue
-
-        country,code=get_country(host)
-
-        servers.append({
-
-            "config":cfg,
-            "ping":ping,
-            "country":country,
-            "flag":code.lower(),
-            "ip":host,
-            "start":int(time.time())
-
-        })
-
-    except:
-
-        pass
+servers=servers[:MAX_SERVERS]
 
 
 for i,s in enumerate(servers,1):
@@ -153,7 +135,8 @@ for i,s in enumerate(servers,1):
     make_qr(s["config"],i)
 
 
-update_time = int(time.time())
+update_time=int(time.time())
+
 
 with open(STATE_FILE,"w") as f:
 
