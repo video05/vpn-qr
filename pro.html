@@ -175,6 +175,19 @@ fetch("pro_state.json")
 .then(data=>{
 
 servers=data.servers||[]
+  let updated=data.updated||0
+
+if(updated){
+
+let moscowTime=new Date((updated+3*3600)*1000)
+
+let h=moscowTime.getUTCHours().toString().padStart(2,'0')
+let m=moscowTime.getUTCMinutes().toString().padStart(2,'0')
+
+document.getElementById("updateTime").innerHTML=
+"Last update (MSK): "+h+":"+m
+
+}
 
 let now=Math.floor(Date.now()/1000)
 
