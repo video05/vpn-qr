@@ -15,7 +15,7 @@ STATE_FILE="pro_state.json"
 def get_configs(url):
 
     try:
-        r=requests.get(url,timeout=20)
+        r=requests.get(url,timeout=15)
         return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
     except:
         return []
@@ -36,22 +36,15 @@ def parse_vless(link):
     return host,port
 
 
-def tcp_check(host,port):
+def check_server(cfg):
 
     try:
-        sock=socket.create_connection((host,port),2)
-        sock.close()
-        return True
-    except:
-        return False
 
-
-def tls_check(host,port):
-
-    try:
-        ctx=ssl.create_default_context()
+        host,port=parse_vless(cfg)
 
         start=time.time()
+
+        ctx=ssl.create_default_context()
 
         sock=socket.create_connection((host,port),2)
 
@@ -59,69 +52,24 @@ def tls_check(host,port):
 
         ssock.close()
 
-        delay=time.time()-start
+        ping=time.time()-start
 
-        if delay<2:
-            return True
-
-    except:
-        pass
-
-    return False
-
-
-def measure_ping(host,port):
-
-    try:
-        start=time.time()
-        sock=socket.create_connection((host,port),2)
-        sock.close()
-        return time.time()-start
-    except:
-        return None
-
-
-def get_country(ip):
-
-    try:
-        r=requests.get(
-            f"http://ip-api.com/json/{ip}?fields=country,countryCode",
-            timeout=4
-        )
-
-        data=r.json()
-
-        return data.get("country","Unknown"),data.get("countryCode","")
-
-    except:
-        return "Unknown",""
-
-
-def make_qr(cfg,i):
-
-    img=qrcode.make(cfg)
-
-    img.save(f"qr{i}.png")
-
-
-def check_server(cfg):
-
-    try:
-
-        host,port=parse_vless(cfg)
-
-        if not tcp_check(host,port):
+        if ping>2:
             return None
 
-        if not tls_check(host,port):
-            return None
+        country="Unknown"
+        code=""
 
-        ping=measure_ping(host,port)
-
-        if ping is None:
-            return None
-
-        country,code=get_country(host)
+        try:
+            r=requests.get(
+                f"http://ip-api.com/json/{host}?fields=country,countryCode",
+                timeout=3
+            )
+            d=r.json()
+            country=d.get("country","Unknown")
+            code=d.get("countryCode","")
+        except:
+            pass
 
         return {
 
@@ -135,7 +83,14 @@ def check_server(cfg):
         }
 
     except:
+
         return None
+
+
+def make_qr(cfg,i):
+
+    img=qrcode.make(cfg)
+    img.save(f"qr{i}.png")
 
 
 configs1=get_configs(URL1)[:25]
@@ -147,9 +102,9 @@ configs=configs1+configs2
 servers=[]
 
 
-with ThreadPoolExecutor(max_workers=25) as executor:
+with ThreadPoolExecutor(max_workers=20) as executor:
 
-    futures=[executor.submit(check_server,cfg) for cfg in configs]
+    futures=[executor.submit(check_server,c) for c in configs]
 
     for future in as_completed(futures):
 
@@ -158,25 +113,11 @@ with ThreadPoolExecutor(max_workers=25) as executor:
         if result:
             servers.append(result)
 
-
-if len(servers)<6:
-
-    extra=configs1[25:60]+configs2[25:60]
-
-    with ThreadPoolExecutor(max_workers=25) as executor:
-
-        futures=[executor.submit(check_server,cfg) for cfg in extra]
-
-        for future in as_completed(futures):
-
-            result=future.result()
-
-            if result:
-                servers.append(result)
+        if len(servers)>=6:
+            break
 
 
 servers=sorted(servers,key=lambda x:x["ping"])
-
 
 servers=servers[:6]
 
