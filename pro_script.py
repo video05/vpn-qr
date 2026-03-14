@@ -153,6 +153,10 @@ for i,s in enumerate(servers,1):
     make_qr(s["config"],i)
 
 
-with open(STATE_FILE,"w") as f:
+update_time = int(time.time())
 
-    json.dump({"servers":servers},f)
+with open(STATE_FILE,"w") as f:
+    json.dump({
+        "servers":servers,
+        "updated":update_time
+    },f)
