@@ -53,7 +53,7 @@ def check_server(cfg):
 
         ping=time.time()-start
 
-        if ping>2:
+        if ping>3:
             return None
 
         country="Unknown"
@@ -64,9 +64,12 @@ def check_server(cfg):
                 f"http://ip-api.com/json/{host}?fields=country,countryCode",
                 timeout=5
             )
+
             d=r.json()
+
             country=d.get("country","Unknown")
             code=d.get("countryCode","")
+
         except:
             pass
 
@@ -89,7 +92,6 @@ def check_server(cfg):
 def make_qr(cfg,i):
 
     img=qrcode.make(cfg)
-
     img.save(f"qr{i}.png")
 
 
@@ -107,16 +109,35 @@ for cfg in configs:
     result=check_server(cfg)
 
     if result:
+
         servers.append(result)
 
-    if len(servers)>=6:
-        break
+        # сортируем каждый раз чтобы быстрые были сверху
+        servers=sorted(servers,key=lambda x:x["ping"])
+
+        # держим только 6 лучших
+        servers=servers[:6]
 
 
-servers=sorted(servers,key=lambda x:x["ping"])
+# если серверов меньше 6 — проверяем ещё
+if len(servers)<6:
 
-servers=servers[:6]
+    extra=configs1[25:80]+configs2[25:80]
 
+    for cfg in extra:
+
+        result=check_server(cfg)
+
+        if result:
+
+            servers.append(result)
+
+            servers=sorted(servers,key=lambda x:x["ping"])
+
+            servers=servers[:6]
+
+
+# генерация QR
 
 for i,s in enumerate(servers,1):
 
