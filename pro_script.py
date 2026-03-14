@@ -4,7 +4,6 @@ import time
 import socket
 import ssl
 import qrcode
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
@@ -15,7 +14,7 @@ STATE_FILE="pro_state.json"
 def get_configs(url):
 
     try:
-        r=requests.get(url,timeout=15)
+        r=requests.get(url,timeout=20)
         return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
     except:
         return []
@@ -46,7 +45,7 @@ def check_server(cfg):
 
         ctx=ssl.create_default_context()
 
-        sock=socket.create_connection((host,port),2)
+        sock=socket.create_connection((host,port),3)
 
         ssock=ctx.wrap_socket(sock,server_hostname=host)
 
@@ -63,7 +62,7 @@ def check_server(cfg):
         try:
             r=requests.get(
                 f"http://ip-api.com/json/{host}?fields=country,countryCode",
-                timeout=3
+                timeout=5
             )
             d=r.json()
             country=d.get("country","Unknown")
@@ -90,6 +89,7 @@ def check_server(cfg):
 def make_qr(cfg,i):
 
     img=qrcode.make(cfg)
+
     img.save(f"qr{i}.png")
 
 
@@ -102,19 +102,15 @@ configs=configs1+configs2
 servers=[]
 
 
-with ThreadPoolExecutor(max_workers=20) as executor:
+for cfg in configs:
 
-    futures=[executor.submit(check_server,c) for c in configs]
+    result=check_server(cfg)
 
-    for future in as_completed(futures):
+    if result:
+        servers.append(result)
 
-        result=future.result()
-
-        if result:
-            servers.append(result)
-
-        if len(servers)>=6:
-            break
+    if len(servers)>=6:
+        break
 
 
 servers=sorted(servers,key=lambda x:x["ping"])
