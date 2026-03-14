@@ -2,10 +2,10 @@ import requests
 import json
 import time
 import socket
+import ssl
 import qrcode
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
-
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
 
 STATE_FILE="pro_state.json"
@@ -13,9 +13,11 @@ STATE_FILE="pro_state.json"
 
 def get_configs(url):
 
-    r=requests.get(url,timeout=20)
-
-    return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+    try:
+        r=requests.get(url,timeout=20)
+        return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+    except:
+        return []
 
 
 def parse_vless(link):
@@ -33,7 +35,41 @@ def parse_vless(link):
     return host,port
 
 
-def tcp_ping(host,port):
+def tcp_check(host,port):
+
+    try:
+
+        sock=socket.create_connection((host,port),3)
+
+        sock.close()
+
+        return True
+
+    except:
+
+        return False
+
+
+def tls_check(host,port):
+
+    try:
+
+        ctx=ssl.create_default_context()
+
+        sock=socket.create_connection((host,port),3)
+
+        ssock=ctx.wrap_socket(sock,server_hostname=host)
+
+        ssock.close()
+
+        return True
+
+    except:
+
+        return False
+
+
+def measure_ping(host,port):
 
     try:
 
@@ -73,26 +109,31 @@ def make_qr(cfg,i):
 
 
 configs1=get_configs(URL1)
-
 configs2=get_configs(URL2)
+
+configs=configs1[:30]+configs2[:30]
 
 servers=[]
 
 
-# первые 3 сервера из первого источника
-
-for cfg in configs1:
-
-    if len(servers)>=3:
-        break
+for cfg in configs:
 
     try:
 
         host,port=parse_vless(cfg)
 
-        ping=tcp_ping(host,port)
+        # 1 TCP check
+        if not tcp_check(host,port):
+            continue
 
-        if not ping:
+        # 2 TLS check
+        if not tls_check(host,port):
+            continue
+
+        # 3 ping measurement
+        ping=measure_ping(host,port)
+
+        if ping is None:
             continue
 
         country,code=get_country(host)
@@ -113,44 +154,24 @@ for cfg in configs1:
         pass
 
 
-# следующие 3 сервера из второго источника
+# сортировка по ping
 
-for cfg in configs2:
+servers=sorted(servers,key=lambda x:x["ping"])
 
-    if len(servers)>=6:
-        break
 
-    try:
+# берем лучшие 6
 
-        host,port=parse_vless(cfg)
+servers=servers[:6]
 
-        ping=tcp_ping(host,port)
 
-        if not ping:
-            continue
-
-        country,code=get_country(host)
-
-        servers.append({
-
-            "config":cfg,
-            "ping":ping,
-            "country":country,
-            "flag":code.lower(),
-            "ip":host,
-            "start":int(time.time())
-
-        })
-
-    except:
-
-        pass
-
+# создаем QR
 
 for i,s in enumerate(servers,1):
 
     make_qr(s["config"],i)
 
+
+# сохраняем JSON
 
 with open(STATE_FILE,"w") as f:
 
