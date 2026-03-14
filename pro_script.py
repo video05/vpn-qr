@@ -5,9 +5,7 @@ import socket
 import qrcode
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
-
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
-
 TG_URL="https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/githubmirror/tg-proxy/all.txt"
 
 STATE_FILE="pro_state.json"
@@ -81,7 +79,6 @@ servers=[]
 
 
 # VPN 1-3
-
 for cfg in configs1:
 
     if len(servers)>=3:
@@ -99,23 +96,19 @@ for cfg in configs1:
         country,code=get_country(host)
 
         servers.append({
-
             "config":cfg,
             "ping":ping,
             "country":country,
             "flag":code.lower(),
             "ip":host,
             "start":int(time.time())
-
         })
 
     except:
-
         pass
 
 
 # VPN 4-6
-
 for cfg in configs2:
 
     if len(servers)>=6:
@@ -133,37 +126,30 @@ for cfg in configs2:
         country,code=get_country(host)
 
         servers.append({
-
             "config":cfg,
             "ping":ping,
             "country":country,
             "flag":code.lower(),
             "ip":host,
             "start":int(time.time())
-
         })
 
     except:
-
         pass
 
 
 for i,s in enumerate(servers,1):
-
     make_qr(s["config"],i)
 
 
 # Telegram proxies
-
 tg=[]
 
 try:
 
     r=requests.get(TG_URL,timeout=20)
 
-    lines=r.text.split("\n")
-
-    for line in lines:
+    for line in r.text.splitlines():
 
         line=line.strip()
 
@@ -174,27 +160,24 @@ try:
 
         if len(parts)>=3:
 
-            server=parts[0]
+            ip=parts[0]
             port=parts[1]
             secret=parts[2]
 
-            tg_link=f"tg://proxy?server={server}&port={port}&secret={secret}"
+            link=f"https://t.me/proxy?server={ip}&port={port}&secret={secret}"
 
-            tg.append(tg_link)
+            tg.append(link)
 
         if len(tg)>=3:
             break
 
 except:
-
     pass
 
 
 with open(STATE_FILE,"w") as f:
 
     json.dump({
-
         "servers":servers,
         "tg":tg
-
     },f)
