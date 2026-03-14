@@ -36,7 +36,7 @@ def parse_vless(link):
     return host,port
 
 
-def http_probe(host,port):
+def tcp_ping(host,port):
 
     try:
 
@@ -44,25 +44,18 @@ def http_probe(host,port):
 
         sock=socket.create_connection((host,port),3)
 
-        request=b"HEAD / HTTP/1.1\r\nHost: google.com\r\n\r\n"
-
-        sock.send(request)
-
-        sock.settimeout(3)
-
-        data=sock.recv(100)
-
         sock.close()
 
         ping=time.time()-start
 
-        if data:
-            return ping
+        if ping>5:
+            return None
+
+        return ping
 
     except:
-        pass
 
-    return None
+        return None
 
 
 def get_country(ip):
@@ -105,7 +98,7 @@ for cfg in configs:
 
         host,port=parse_vless(cfg)
 
-        ping=http_probe(host,port)
+        ping=tcp_ping(host,port)
 
         if ping is None:
             continue
@@ -128,17 +121,10 @@ for cfg in configs:
         pass
 
 
-# сортировка по ping
-
 servers=sorted(servers,key=lambda x:x["ping"])
-
-
-# максимум 20
 
 servers=servers[:MAX_SERVERS]
 
-
-# создаём QR
 
 for i,s in enumerate(servers,1):
 
