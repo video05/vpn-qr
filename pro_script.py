@@ -142,8 +142,7 @@ for i,s in enumerate(servers,1):
     make_qr(s["config"],i)
 
 
-# Telegram SOCKS proxies
-
+# Telegram proxies
 tg=[]
 
 try:
@@ -157,7 +156,7 @@ try:
         if not line:
             continue
 
-        parts=line.split(":")
+        parts=line.replace(" ",":").split(":")
 
         if len(parts)>=4:
 
