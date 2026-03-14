@@ -1,1 +1,1 @@
-vless://2563b829-866c-4c0f-8270-a91cffbfe852@alb03.tcpdoor.net:443?type=xhttp&security=tls&fp=random&sni=alb03.tcpdoor.net&path=c1a7c061-bf4d-4a96-b10f-64f484aa2a9a&host=alb03.tcpdoor.net&mode=auto&alpn=h2#%F0%9F%87%A6%F0%9F%87%B1%20Albania%20%5B%2ACIDR%5D
+vless://dc84d6fd-ec3d-4ecc-a176-c14fc17e3e2c@46.8.113.251:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=diamir.su&pbk=1vSZjvhZO01oAEH3b7eebR1qF5dLU1Dq2E7xu8pwGSs&sid=428ef87fd47a3a32#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D
