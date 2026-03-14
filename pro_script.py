@@ -10,15 +10,15 @@ URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/m
 
 STATE_FILE="pro_state.json"
 
+MAX_SERVERS=20
+
 
 def get_configs(url):
 
     try:
         r=requests.get(url,timeout=20)
         lines=r.text.split("\n")
-
         return [x.strip() for x in lines if x.startswith("vless://")]
-
     except:
         return []
 
@@ -92,7 +92,7 @@ def make_qr(cfg,i):
 configs1=get_configs(URL1)
 configs2=get_configs(URL2)
 
-configs=configs1[:60]+configs2[:60]
+configs=configs1+configs2
 
 
 servers=[]
@@ -111,7 +111,7 @@ for cfg in configs:
 
         country,code=get_country(host)
 
-        server={
+        servers.append({
 
             "config":cfg,
             "ping":ping,
@@ -120,23 +120,21 @@ for cfg in configs:
             "ip":host,
             "start":int(time.time())
 
-        }
-
-        servers.append(server)
+        })
 
     except:
 
         pass
 
 
-# сортировка по ping
+# сортируем по ping
 
 servers=sorted(servers,key=lambda x:x["ping"])
 
 
-# берём лучшие 6
+# берём максимум 20
 
-servers=servers[:6]
+servers=servers[:MAX_SERVERS]
 
 
 # создаём QR
@@ -145,6 +143,8 @@ for i,s in enumerate(servers,1):
 
     make_qr(s["config"],i)
 
+
+# сохраняем json
 
 with open(STATE_FILE,"w") as f:
 
