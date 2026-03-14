@@ -5,7 +5,6 @@
 <title>PRO VPN SERVERS</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <meta http-equiv="refresh" content="60">
 
 <style>
@@ -94,7 +93,6 @@ width:90%;
 <body>
 
 <h1>PRO VPN SERVERS</h1>
-
 <p>Servers tested every 5 minutes</p>
 
 <div class="container">
@@ -168,24 +166,19 @@ let now=Math.floor(Date.now()/1000)
 servers.forEach((s,i)=>{
 
 let ping=s.ping?Math.round(s.ping*1000)+" ms":"N/A"
-
 let country=s.country||"Unknown"
-
 let ip=s.ip||"Unknown"
 
 let flag=""
-
 if(s.flag){
 flag=`<img class="flag" src="https://flagcdn.com/24x18/${s.flag}.png">`
 }
 
 let alive=now-(s.start||now)
-
 let min=Math.floor(alive/60)
 let hr=Math.floor(min/60)
 
 let text=
-
 "Ping: "+ping+"<br>"+
 "Country: "+flag+" "+country+"<br>"+
 "Server: "+ip+"<br>"+
@@ -212,9 +205,12 @@ alert("Config copied")
 
 function openTG(index){
 
-if(!tg[index]) return
+if(!tg[index]){
+alert("Proxy not loaded yet")
+return
+}
 
-window.location.href=tg[index]
+window.open(tg[index],"_blank")
 
 }
 
