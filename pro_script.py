@@ -4,6 +4,7 @@ import time
 import socket
 import ssl
 import qrcode
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
@@ -38,25 +39,19 @@ def parse_vless(link):
 def tcp_check(host,port):
 
     try:
-
-        sock=socket.create_connection((host,port),3)
-
+        sock=socket.create_connection((host,port),2)
         sock.close()
-
         return True
-
     except:
-
         return False
 
 
 def tls_check(host,port):
 
     try:
-
         ctx=ssl.create_default_context()
 
-        sock=socket.create_connection((host,port),3)
+        sock=socket.create_connection((host,port),2)
 
         ssock=ctx.wrap_socket(sock,server_hostname=host)
 
@@ -65,7 +60,6 @@ def tls_check(host,port):
         return True
 
     except:
-
         return False
 
 
@@ -75,7 +69,7 @@ def measure_ping(host,port):
 
         start=time.time()
 
-        sock=socket.create_connection((host,port),3)
+        sock=socket.create_connection((host,port),2)
 
         sock.close()
 
@@ -90,7 +84,10 @@ def get_country(ip):
 
     try:
 
-        r=requests.get(f"http://ip-api.com/json/{ip}?fields=country,countryCode",timeout=5)
+        r=requests.get(
+            f"http://ip-api.com/json/{ip}?fields=country,countryCode",
+            timeout=4
+        )
 
         data=r.json()
 
@@ -108,37 +105,26 @@ def make_qr(cfg,i):
     img.save(f"qr{i}.png")
 
 
-configs1=get_configs(URL1)
-configs2=get_configs(URL2)
-
-configs=configs1[:30]+configs2[:30]
-
-servers=[]
-
-
-for cfg in configs:
+def check_server(cfg):
 
     try:
 
         host,port=parse_vless(cfg)
 
-        # 1 TCP check
         if not tcp_check(host,port):
-            continue
+            return None
 
-        # 2 TLS check
         if not tls_check(host,port):
-            continue
+            return None
 
-        # 3 ping measurement
         ping=measure_ping(host,port)
 
         if ping is None:
-            continue
+            return None
 
         country,code=get_country(host)
 
-        servers.append({
+        return {
 
             "config":cfg,
             "ping":ping,
@@ -147,11 +133,34 @@ for cfg in configs:
             "ip":host,
             "start":int(time.time())
 
-        })
+        }
 
     except:
 
-        pass
+        return None
+
+
+configs1=get_configs(URL1)[:30]
+configs2=get_configs(URL2)[:30]
+
+configs=configs1+configs2
+
+
+servers=[]
+
+
+# Параллельная проверка
+
+with ThreadPoolExecutor(max_workers=20) as executor:
+
+    futures=[executor.submit(check_server,cfg) for cfg in configs]
+
+    for future in as_completed(futures):
+
+        result=future.result()
+
+        if result:
+            servers.append(result)
 
 
 # сортировка по ping
