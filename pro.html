@@ -5,6 +5,7 @@
 <title>PRO VPN SERVERS</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <meta http-equiv="refresh" content="60">
 
 <style>
@@ -52,9 +53,36 @@ background:#2ecc71;
 color:white;
 }
 
+button:hover{
+opacity:0.9;
+}
+
 .flag{
 vertical-align:middle;
 margin-right:4px;
+}
+
+.apps{
+margin-top:40px;
+display:flex;
+justify-content:center;
+gap:40px;
+flex-wrap:wrap;
+}
+
+.app{
+text-decoration:none;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+font-size:14px;
+}
+
+.app img{
+width:64px;
+height:64px;
+margin-bottom:10px;
 }
 
 .footer{
@@ -88,9 +116,11 @@ width:90%;
 <body>
 
 <h1>PRO VPN SERVERS</h1>
+
 <p>Servers tested every 5 minutes</p>
 
 <div class="container">
+
 
 <div class="qr">
 <h2>VPN 1</h2>
@@ -99,12 +129,14 @@ width:90%;
 <button class="copy" onclick="copyConfig(0)">Copy config</button>
 </div>
 
+
 <div class="qr">
 <h2>VPN 2</h2>
 <img src="qr2.png" width="220">
 <div class="info" id="info2">Loading...</div>
 <button class="copy" onclick="copyConfig(1)">Copy config</button>
 </div>
+
 
 <div class="qr">
 <h2>VPN 3</h2>
@@ -113,12 +145,14 @@ width:90%;
 <button class="copy" onclick="copyConfig(2)">Copy config</button>
 </div>
 
+
 <div class="qr">
 <h2 style="color:#ff4d4d">VPN 4</h2>
 <img src="qr4.png" width="220">
 <div class="info" id="info4">Loading...</div>
 <button class="copy" onclick="copyConfig(3)">Copy config</button>
 </div>
+
 
 <div class="qr">
 <h2 style="color:#ff4d4d">VPN 5</h2>
@@ -127,6 +161,7 @@ width:90%;
 <button class="copy" onclick="copyConfig(4)">Copy config</button>
 </div>
 
+
 <div class="qr">
 <h2 style="color:#ff4d4d">VPN 6</h2>
 <img src="qr6.png" width="220">
@@ -134,7 +169,9 @@ width:90%;
 <button class="copy" onclick="copyConfig(5)">Copy config</button>
 </div>
 
+
 </div>
+
 
 <script>
 
@@ -144,48 +181,48 @@ fetch("pro_state.json")
 .then(r=>r.json())
 .then(data=>{
 
-servers=data.servers || []
+servers=data.servers||[]
 
 let now=Math.floor(Date.now()/1000)
 
 servers.forEach((s,i)=>{
 
-let ping=s.ping ? Math.round(s.ping*1000)+" ms" : "N/A"
-let country=s.country || "Unknown"
-let ip=s.ip || "Unknown"
+let ping=s.ping?Math.round(s.ping*1000)+" ms":"N/A"
+
+let country=s.country||"Unknown"
+
+let ip=s.ip||"Unknown"
 
 let flag=""
+
 if(s.flag){
-flag='<img class="flag" src="https://flagcdn.com/24x18/'+s.flag+'.png">'
+flag=`<img class="flag" src="https://flagcdn.com/24x18/${s.flag}.png">`
 }
 
 let alive=now-(s.start||now)
+
 let min=Math.floor(alive/60)
+
 let hr=Math.floor(min/60)
 
 let text=
+
 "Ping: "+ping+"<br>"+
 "Country: "+flag+" "+country+"<br>"+
 "Server: "+ip+"<br>"+
 "Alive: "+hr+"h "+(min%60)+"m<br>"+
 "Status: ONLINE"
 
-let el=document.getElementById("info"+(i+1))
-if(el) el.innerHTML=text
+document.getElementById("info"+(i+1)).innerHTML=text
 
 })
 
 })
-.catch(e=>{
-console.log("JSON error",e)
-})
+
 
 function copyConfig(index){
 
-if(!servers[index]){
-alert("Server not loaded yet")
-return
-}
+if(!servers[index]) return
 
 navigator.clipboard.writeText(servers[index].config)
 
@@ -194,6 +231,28 @@ alert("Config copied")
 }
 
 </script>
+
+
+<div class="apps">
+
+<a class="app" href="https://play.google.com/store/apps/details?id=com.v2raytun.android&hl=ru" target="_blank">
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg">
+
+Download for Android
+
+</a>
+
+
+<a class="app" href="https://apps.apple.com/ru/app/v2raytun/id6476628951" target="_blank">
+
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg">
+
+Download for iPhone
+
+</a>
+
+</div>
 
 
 <div class="footer">
