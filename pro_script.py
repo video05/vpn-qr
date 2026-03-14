@@ -58,6 +58,31 @@ def tls_check(host,port):
         return False
 
 
+def v2_check(host,port):
+
+    try:
+
+        ctx=ssl.create_default_context()
+
+        sock=socket.create_connection((host,port),3)
+
+        ssock=ctx.wrap_socket(sock,server_hostname=host)
+
+        ssock.send(b"GET / HTTP/1.1\r\nHost: google.com\r\n\r\n")
+
+        data=ssock.recv(100)
+
+        ssock.close()
+
+        if data:
+            return True
+
+    except:
+        pass
+
+    return False
+
+
 def measure_ping(host,port):
 
     try:
@@ -72,6 +97,7 @@ def measure_ping(host,port):
 def get_country(ip):
 
     try:
+
         r=requests.get(
             f"http://ip-api.com/json/{ip}?fields=country,countryCode",
             timeout=4
@@ -105,6 +131,9 @@ def check_server(cfg):
         if not tls_check(host,port):
             return None
 
+        if not v2_check(host,port):
+            return None
+
         ping=measure_ping(host,port)
 
         if ping is None:
@@ -128,8 +157,6 @@ def check_server(cfg):
         return None
 
 
-# загрузка конфигов
-
 configs1=get_configs(URL1)[:25]
 configs2=get_configs(URL2)[:25]
 
@@ -138,8 +165,6 @@ configs=configs1+configs2
 
 servers=[]
 
-
-# параллельная проверка
 
 with ThreadPoolExecutor(max_workers=25) as executor:
 
@@ -152,8 +177,6 @@ with ThreadPoolExecutor(max_workers=25) as executor:
         if result:
             servers.append(result)
 
-
-# если серверов мало — берём больше
 
 if len(servers)<6:
 
@@ -171,24 +194,16 @@ if len(servers)<6:
                 servers.append(result)
 
 
-# сортировка по ping
-
 servers=sorted(servers,key=lambda x:x["ping"])
 
 
-# берем лучшие 6
-
 servers=servers[:6]
 
-
-# генерация QR
 
 for i,s in enumerate(servers,1):
 
     make_qr(s["config"],i)
 
-
-# сохранение json
 
 with open(STATE_FILE,"w") as f:
 
