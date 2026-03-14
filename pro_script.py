@@ -80,11 +80,11 @@ configs2=get_configs(URL2)
 servers=[]
 
 
-# первые 3 сервера из первого источника
+# первые 10 серверов из первого источника
 
 for cfg in configs1:
 
-    if len(servers)>=3:
+    if len(servers)>=10:
         break
 
     try:
@@ -114,11 +114,11 @@ for cfg in configs1:
         pass
 
 
-# следующие 3 сервера из второго источника
+# следующие 10 серверов из второго источника
 
 for cfg in configs2:
 
-    if len(servers)>=6:
+    if len(servers)>=20:
         break
 
     try:
@@ -156,6 +156,7 @@ for i,s in enumerate(servers,1):
 update_time = int(time.time())
 
 with open(STATE_FILE,"w") as f:
+
     json.dump({
         "servers":servers,
         "updated":update_time
