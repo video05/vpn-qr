@@ -5,7 +5,6 @@
 <title>PRO VPN SERVERS</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <meta http-equiv="refresh" content="60">
 
 <style>
@@ -25,11 +24,11 @@ justify-content:center;
 }
 
 .qr{
-margin:20px;
-padding:20px;
+margin:15px;
+padding:15px;
 border:1px solid #333;
 border-radius:10px;
-width:280px;
+width:260px;
 background:#1a1a1a;
 }
 
@@ -119,59 +118,7 @@ width:90%;
 
 <p>Servers tested every 5 minutes</p>
 
-<div class="container">
-
-
-<div class="qr">
-<h2>VPN 1</h2>
-<img src="qr1.png" width="220">
-<div class="info" id="info1">Loading...</div>
-<button class="copy" onclick="copyConfig(0)">Copy config</button>
-</div>
-
-
-<div class="qr">
-<h2>VPN 2</h2>
-<img src="qr2.png" width="220">
-<div class="info" id="info2">Loading...</div>
-<button class="copy" onclick="copyConfig(1)">Copy config</button>
-</div>
-
-
-<div class="qr">
-<h2>VPN 3</h2>
-<img src="qr3.png" width="220">
-<div class="info" id="info3">Loading...</div>
-<button class="copy" onclick="copyConfig(2)">Copy config</button>
-</div>
-
-
-<div class="qr">
-<h2 style="color:#ff4d4d">VPN 4</h2>
-<img src="qr4.png" width="220">
-<div class="info" id="info4">Loading...</div>
-<button class="copy" onclick="copyConfig(3)">Copy config</button>
-</div>
-
-
-<div class="qr">
-<h2 style="color:#ff4d4d">VPN 5</h2>
-<img src="qr5.png" width="220">
-<div class="info" id="info5">Loading...</div>
-<button class="copy" onclick="copyConfig(4)">Copy config</button>
-</div>
-
-
-<div class="qr">
-<h2 style="color:#ff4d4d">VPN 6</h2>
-<img src="qr6.png" width="220">
-<div class="info" id="info6">Loading...</div>
-<button class="copy" onclick="copyConfig(5)">Copy config</button>
-</div>
-
-
-</div>
-
+<div class="container" id="vpnContainer"></div>
 
 <script>
 
@@ -184,6 +131,8 @@ fetch("pro_state.json")
 servers=data.servers||[]
 
 let now=Math.floor(Date.now()/1000)
+
+let container=document.getElementById("vpnContainer")
 
 servers.forEach((s,i)=>{
 
@@ -213,7 +162,18 @@ let text=
 "Alive: "+hr+"h "+(min%60)+"m<br>"+
 "Status: ONLINE"
 
-document.getElementById("info"+(i+1)).innerHTML=text
+let div=document.createElement("div")
+
+div.className="qr"
+
+div.innerHTML=
+
+"<h2>VPN "+(i+1)+"</h2>"+
+"<img src='qr"+(i+1)+".png' width='200'>"+
+"<div class='info'>"+text+"</div>"+
+"<button class='copy' onclick='copyConfig("+i+")'>Copy config</button>"
+
+container.appendChild(div)
 
 })
 
@@ -235,7 +195,7 @@ alert("Config copied")
 
 <div class="apps">
 
-<a class="app" href="https://play.google.com/store/apps/details?id=dev.hexasoftware.v2box&hl=ru" target="_blank">
+<a class="app" href="https://play.google.com/store/apps/details?id=com.v2raytun.android&hl=ru" target="_blank">
 
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg">
 
