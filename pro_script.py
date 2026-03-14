@@ -6,7 +6,6 @@ import qrcode
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
 URL2="https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/githubmirror/26.txt"
-TG_URL="https://raw.githubusercontent.com/whoahaow/rjsxrd/refs/heads/main/githubmirror/tg-proxy/all.txt"
 
 STATE_FILE="pro_state.json"
 
@@ -54,7 +53,10 @@ def get_country(ip):
 
     try:
 
-        r=requests.get(f"http://ip-api.com/json/{ip}?fields=country,countryCode",timeout=5)
+        r=requests.get(
+            f"http://ip-api.com/json/{ip}?fields=country,countryCode",
+            timeout=5
+        )
 
         data=r.json()
 
@@ -78,7 +80,8 @@ configs2=get_configs(URL2)
 servers=[]
 
 
-# VPN 1-3
+# первые 3 сервера из первого источника
+
 for cfg in configs1:
 
     if len(servers)>=3:
@@ -96,19 +99,23 @@ for cfg in configs1:
         country,code=get_country(host)
 
         servers.append({
+
             "config":cfg,
             "ping":ping,
             "country":country,
             "flag":code.lower(),
             "ip":host,
             "start":int(time.time())
+
         })
 
     except:
+
         pass
 
 
-# VPN 4-6
+# следующие 3 сервера из второго источника
+
 for cfg in configs2:
 
     if len(servers)>=6:
@@ -126,59 +133,26 @@ for cfg in configs2:
         country,code=get_country(host)
 
         servers.append({
+
             "config":cfg,
             "ping":ping,
             "country":country,
             "flag":code.lower(),
             "ip":host,
             "start":int(time.time())
+
         })
 
     except:
+
         pass
 
 
 for i,s in enumerate(servers,1):
+
     make_qr(s["config"],i)
-
-
-# Telegram proxies
-tg=[]
-
-try:
-
-    r=requests.get(TG_URL,timeout=20)
-
-    for line in r.text.splitlines():
-
-        line=line.strip()
-
-        if not line:
-            continue
-
-        parts=line.replace(" ",":").split(":")
-
-        if len(parts)>=4:
-
-            ip=parts[0]
-            port=parts[1]
-            user=parts[2]
-            password=parts[3]
-
-            link=f"https://t.me/socks?server={ip}&port={port}&user={user}&pass={password}"
-
-            tg.append(link)
-
-        if len(tg)>=3:
-            break
-
-except:
-    pass
 
 
 with open(STATE_FILE,"w") as f:
 
-    json.dump({
-        "servers":servers,
-        "tg":tg
-    },f)
+    json.dump({"servers":servers},f)
