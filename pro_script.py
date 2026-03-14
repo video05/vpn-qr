@@ -15,7 +15,10 @@ def get_configs(url):
 
     try:
         r=requests.get(url,timeout=20)
-        return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
+        lines=r.text.split("\n")
+
+        return [x.strip() for x in lines if x.startswith("vless://")]
+
     except:
         return []
 
@@ -35,11 +38,9 @@ def parse_vless(link):
     return host,port
 
 
-def check_server(cfg):
+def tls_ping(host,port):
 
     try:
-
-        host,port=parse_vless(cfg)
 
         start=time.time()
 
@@ -53,27 +54,64 @@ def check_server(cfg):
 
         ping=time.time()-start
 
-        if ping>3:
+        if ping>4:
             return None
 
-        country="Unknown"
-        code=""
+        return ping
 
-        try:
-            r=requests.get(
-                f"http://ip-api.com/json/{host}?fields=country,countryCode",
-                timeout=5
-            )
+    except:
 
-            d=r.json()
+        return None
 
-            country=d.get("country","Unknown")
-            code=d.get("countryCode","")
 
-        except:
-            pass
+def get_country(ip):
 
-        return {
+    try:
+
+        r=requests.get(
+            f"http://ip-api.com/json/{ip}?fields=country,countryCode",
+            timeout=4
+        )
+
+        data=r.json()
+
+        return data.get("country","Unknown"),data.get("countryCode","")
+
+    except:
+
+        return "Unknown",""
+
+
+def make_qr(cfg,i):
+
+    img=qrcode.make(cfg)
+
+    img.save(f"qr{i}.png")
+
+
+configs1=get_configs(URL1)
+configs2=get_configs(URL2)
+
+configs=configs1[:60]+configs2[:60]
+
+
+servers=[]
+
+
+for cfg in configs:
+
+    try:
+
+        host,port=parse_vless(cfg)
+
+        ping=tls_ping(host,port)
+
+        if ping is None:
+            continue
+
+        country,code=get_country(host)
+
+        server={
 
             "config":cfg,
             "ping":ping,
@@ -84,60 +122,24 @@ def check_server(cfg):
 
         }
 
+        servers.append(server)
+
     except:
 
-        return None
+        pass
 
 
-def make_qr(cfg,i):
+# сортировка по ping
 
-    img=qrcode.make(cfg)
-    img.save(f"qr{i}.png")
-
-
-configs1=get_configs(URL1)[:25]
-configs2=get_configs(URL2)[:25]
-
-configs=configs1+configs2
+servers=sorted(servers,key=lambda x:x["ping"])
 
 
-servers=[]
+# берём лучшие 6
+
+servers=servers[:6]
 
 
-for cfg in configs:
-
-    result=check_server(cfg)
-
-    if result:
-
-        servers.append(result)
-
-        # сортируем каждый раз чтобы быстрые были сверху
-        servers=sorted(servers,key=lambda x:x["ping"])
-
-        # держим только 6 лучших
-        servers=servers[:6]
-
-
-# если серверов меньше 6 — проверяем ещё
-if len(servers)<6:
-
-    extra=configs1[25:80]+configs2[25:80]
-
-    for cfg in extra:
-
-        result=check_server(cfg)
-
-        if result:
-
-            servers.append(result)
-
-            servers=sorted(servers,key=lambda x:x["ping"])
-
-            servers=servers[:6]
-
-
-# генерация QR
+# создаём QR
 
 for i,s in enumerate(servers,1):
 
