@@ -2,7 +2,6 @@ import requests
 import json
 import time
 import socket
-import ssl
 import qrcode
 
 URL1="https://raw.githubusercontent.com/igareck/vpn-configs-for-russia/refs/heads/main/Vless-Reality-White-Lists-Rus-Mobile.txt"
@@ -17,8 +16,7 @@ def get_configs(url):
 
     try:
         r=requests.get(url,timeout=20)
-        lines=r.text.split("\n")
-        return [x.strip() for x in lines if x.startswith("vless://")]
+        return [x.strip() for x in r.text.split("\n") if x.startswith("vless://")]
     except:
         return []
 
@@ -38,30 +36,33 @@ def parse_vless(link):
     return host,port
 
 
-def tls_ping(host,port):
+def http_probe(host,port):
 
     try:
 
         start=time.time()
 
-        ctx=ssl.create_default_context()
-
         sock=socket.create_connection((host,port),3)
 
-        ssock=ctx.wrap_socket(sock,server_hostname=host)
+        request=b"HEAD / HTTP/1.1\r\nHost: google.com\r\n\r\n"
 
-        ssock.close()
+        sock.send(request)
+
+        sock.settimeout(3)
+
+        data=sock.recv(100)
+
+        sock.close()
 
         ping=time.time()-start
 
-        if ping>4:
-            return None
-
-        return ping
+        if data:
+            return ping
 
     except:
+        pass
 
-        return None
+    return None
 
 
 def get_country(ip):
@@ -104,7 +105,7 @@ for cfg in configs:
 
         host,port=parse_vless(cfg)
 
-        ping=tls_ping(host,port)
+        ping=http_probe(host,port)
 
         if ping is None:
             continue
@@ -127,12 +128,12 @@ for cfg in configs:
         pass
 
 
-# сортируем по ping
+# сортировка по ping
 
 servers=sorted(servers,key=lambda x:x["ping"])
 
 
-# берём максимум 20
+# максимум 20
 
 servers=servers[:MAX_SERVERS]
 
@@ -143,8 +144,6 @@ for i,s in enumerate(servers,1):
 
     make_qr(s["config"],i)
 
-
-# сохраняем json
 
 with open(STATE_FILE,"w") as f:
 
