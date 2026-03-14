@@ -50,31 +50,18 @@ def tls_check(host,port):
 
     try:
         ctx=ssl.create_default_context()
+
+        start=time.time()
+
         sock=socket.create_connection((host,port),2)
-        ssock=ctx.wrap_socket(sock,server_hostname=host)
-        ssock.close()
-        return True
-    except:
-        return False
-
-
-def v2_check(host,port):
-
-    try:
-
-        ctx=ssl.create_default_context()
-
-        sock=socket.create_connection((host,port),3)
 
         ssock=ctx.wrap_socket(sock,server_hostname=host)
 
-        ssock.send(b"GET / HTTP/1.1\r\nHost: google.com\r\n\r\n")
-
-        data=ssock.recv(100)
-
         ssock.close()
 
-        if data:
+        delay=time.time()-start
+
+        if delay<2:
             return True
 
     except:
@@ -97,7 +84,6 @@ def measure_ping(host,port):
 def get_country(ip):
 
     try:
-
         r=requests.get(
             f"http://ip-api.com/json/{ip}?fields=country,countryCode",
             timeout=4
@@ -108,7 +94,6 @@ def get_country(ip):
         return data.get("country","Unknown"),data.get("countryCode","")
 
     except:
-
         return "Unknown",""
 
 
@@ -131,9 +116,6 @@ def check_server(cfg):
         if not tls_check(host,port):
             return None
 
-        if not v2_check(host,port):
-            return None
-
         ping=measure_ping(host,port)
 
         if ping is None:
@@ -153,7 +135,6 @@ def check_server(cfg):
         }
 
     except:
-
         return None
 
 
@@ -180,7 +161,7 @@ with ThreadPoolExecutor(max_workers=25) as executor:
 
 if len(servers)<6:
 
-    extra=configs1[25:50]+configs2[25:50]
+    extra=configs1[25:60]+configs2[25:60]
 
     with ThreadPoolExecutor(max_workers=25) as executor:
 
