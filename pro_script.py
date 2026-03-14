@@ -50,15 +50,10 @@ def tls_check(host,port):
 
     try:
         ctx=ssl.create_default_context()
-
         sock=socket.create_connection((host,port),2)
-
         ssock=ctx.wrap_socket(sock,server_hostname=host)
-
         ssock.close()
-
         return True
-
     except:
         return False
 
@@ -66,24 +61,17 @@ def tls_check(host,port):
 def measure_ping(host,port):
 
     try:
-
         start=time.time()
-
         sock=socket.create_connection((host,port),2)
-
         sock.close()
-
         return time.time()-start
-
     except:
-
         return None
 
 
 def get_country(ip):
 
     try:
-
         r=requests.get(
             f"http://ip-api.com/json/{ip}?fields=country,countryCode",
             timeout=4
@@ -140,8 +128,10 @@ def check_server(cfg):
         return None
 
 
-configs1=get_configs(URL1)[:30]
-configs2=get_configs(URL2)[:30]
+# загрузка конфигов
+
+configs1=get_configs(URL1)[:25]
+configs2=get_configs(URL2)[:25]
 
 configs=configs1+configs2
 
@@ -149,9 +139,9 @@ configs=configs1+configs2
 servers=[]
 
 
-# Параллельная проверка
+# параллельная проверка
 
-with ThreadPoolExecutor(max_workers=20) as executor:
+with ThreadPoolExecutor(max_workers=25) as executor:
 
     futures=[executor.submit(check_server,cfg) for cfg in configs]
 
@@ -161,6 +151,24 @@ with ThreadPoolExecutor(max_workers=20) as executor:
 
         if result:
             servers.append(result)
+
+
+# если серверов мало — берём больше
+
+if len(servers)<6:
+
+    extra=configs1[25:50]+configs2[25:50]
+
+    with ThreadPoolExecutor(max_workers=25) as executor:
+
+        futures=[executor.submit(check_server,cfg) for cfg in extra]
+
+        for future in as_completed(futures):
+
+            result=future.result()
+
+            if result:
+                servers.append(result)
 
 
 # сортировка по ping
@@ -173,14 +181,14 @@ servers=sorted(servers,key=lambda x:x["ping"])
 servers=servers[:6]
 
 
-# создаем QR
+# генерация QR
 
 for i,s in enumerate(servers,1):
 
     make_qr(s["config"],i)
 
 
-# сохраняем JSON
+# сохранение json
 
 with open(STATE_FILE,"w") as f:
 
