@@ -3,7 +3,7 @@ name: pro vpn update
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/59 * * * *"
 
 jobs:
   build:
