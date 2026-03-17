@@ -1,1 +1,1 @@
-vless://7e0a9f75-b424-493b-b7e6-cebd7ea8642d@144.31.129.64:443?encryption=none&type=tcp&security=tls&fp=chrome&sni=aucdn3.animetut.net#%F0%9F%87%A7%F0%9F%87%BE%20Belarus%20%5B%2ACIDR%5D
+vless://c603d9a2-a89a-4b62-ac96-346d3b52620c@45.15.147.15:10443?encryption=none&type=xhttp&security=reality&path=%2Fassets%2Fv2%2Fpkg&mode=stream-one&extra=null&fp=random&sni=s3.yandex.net&pbk=mLmBhbVFfNuo2eUgBh6r9-5Koz9mUCn3aSzlR6IejUg&sid=e499f276e7bd6420&spx=%2F#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D
