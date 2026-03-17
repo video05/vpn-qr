@@ -1,1 +1,1 @@
-vless://29aab552-bfbb-0320-b22a-9a9c58c84811@84.23.52.105:52006?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=qq&sni=max.ru&pbk=4CH3o5zOMcFNMbnwXnkAg0FFepmsc0QzhahXkUzb1ik&sid=d8c6b58bcbb0c323#%F0%9F%87%A7%F0%9F%87%AA%20Belgium%20%5B%2ACIDR%5D%20VK
+vless://c603d9a2-a89a-4b62-ac96-346d3b52620c@45.15.147.15:15443?encryption=none&type=xhttp&security=reality&path=%2Fassets%2Fv2%2Fpkg&mode=stream-one&extra=null&fp=random&sni=s3.yandex.net&pbk=mLmBhbVFfNuo2eUgBh6r9-5Koz9mUCn3aSzlR6IejUg&sid=31&spx=%2F#%F0%9F%87%A7%F0%9F%87%AC%20Bulgaria%20%5B%2ACIDR%5D
