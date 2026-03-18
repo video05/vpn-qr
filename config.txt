@@ -1,1 +1,1 @@
-vless://a0a70922-a539-4188-9273-ceef2131af36@most-kl.harknmav.fun:443?type=tcp&security=reality&flow=xtls-rprx-vision&fp=chrome&pbk=nPcXUDCqEWg5qfSXaSVa_8nuszqZPX3xuVz80HhUgQo&sid=4e732b0d4d15e0f9&sni=ads.x5.ru&path=&host=#%F0%9F%87%A7%F0%9F%87%BE%20Belarus%20%5B%2ACIDR%5D%20VK
+vless://a0a70922-a539-4188-9273-ceef2131af36@95.163.215.36:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=ads.x5.ru&pbk=nPcXUDCqEWg5qfSXaSVa_8nuszqZPX3xuVz80HhUgQo&sid=4e732b0d4d15e0f9#%F0%9F%87%A7%F0%9F%87%BE%20Belarus%20%5B%2ACIDR%5D%20VK
