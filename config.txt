@@ -1,1 +1,1 @@
-vless://06712703-7ead-03ea-9732-bbfd977ed542@ve-ru.volnalink.uk:4433?security=reality&flow=xtls-rprx-vision&fp=qq&pbk=1YIROH0_y0ErpYZtnSBL93Wa75ydKXE18jHVNHwdmHM&sid=e60d3277446bcac7&sni=yandex.ru#%F0%9F%87%A6%F0%9F%87%BA%20Australia%20%7C%20%F0%9F%8C%90%20%7C%20%5BIPv6%5D%20%5B%2ACIDR%5D%20VK
+vless://a001c9c4-ece2-4dc1-9658-cbad90fcd2e0@5.188.142.78:8081?type=tcp&security=reality&fp=chrome&pbk=Z84J2IelR9ch3k8VtlVhhs5ycBUlXA7wHBWcBrjqnAw&sid=7dbf7d3233971d5c&sni=max.ru&path=&host=#%F0%9F%87%AB%F0%9F%87%B7%20France%20%7C%20%F0%9F%8C%90%20%7C%20%5BIPv6%5D%20%5B%2ACIDR%5D%20VK
