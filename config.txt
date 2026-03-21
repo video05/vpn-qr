@@ -1,1 +1,1 @@
-vless://0e8b89aa-122f-4bcb-a0f4-c4bbbc0dd1b3@176.122.25.47:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=st.vk.com&pbk=FHo-Y9VUgukgsdy9p-1SUOnE9dKCsneG09w3_c7Nh00&sid=22&spx=/#%F0%9F%87%A7%F0%9F%87%AA%20Belgium%20%5B%2ACIDR%5D
+vless://738a43fa-b9d5-52f2-afb1-de4f5cd97753@147.45.116.12:8443?encryption=none&type=xhttp&security=reality&path=%2Fxhttp&mode=stream-one&extra=null&fp=chrome&sni=ads.x5.ru&pbk=DMwdjH5tsGmQpH3lzklBvUfrHOhZf1adWgtUhgAxoQQ&sid=1dc99645#%F0%9F%87%A7%F0%9F%87%B7%20Brazil%20%7C%20%F0%9F%8C%90%20%5B%2ACIDR%5D
