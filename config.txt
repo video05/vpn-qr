@@ -1,1 +1,1 @@
-vless://40759e42-d74b-4470-acc4-a580f264e860@109.120.190.97:80?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=qq&sni=eh.vk.com&pbk=_KUQD98lqozi3En83ZxTPOeIJQMYVFysD2v1udDGqFU#%F0%9F%87%AD%F0%9F%87%B7%20Croatia%20%5B%2ACIDR%5D%20VK
+vless://179fbd03-0b0a-45ed-8f6d-3d947d861e5b@185.86.145.81:8443?encryption=none&type=xhttp&security=reality&host=max.ru&path=%2F&mode=stream-up&extra=null&fp=chrome&sni=max.ru&pbk=bapvm3XJ7mXk2IlyaK59UI_P-yr7LH03_X7_rNwzQy8&sid=dc&spx=%2F#%F0%9F%87%A8%F0%9F%87%A6%20Canada%20%5B%2ACIDR%5D%20VK
