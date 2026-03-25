@@ -1,1 +1,1 @@
-vless://459e3be2-2196-4621-8a29-1afa26189a75@185.86.146.53:8443?encryption=none&type=xhttp&security=reality&host=max.ru&path=/&mode=stream-up&extra=null&fp=chrome&sni=max.ru&pbk=2yDkUjGy4MGQLibYSDDEQuHebbC6uUoXZSw43Tj3IgU&sid=41da&spx=/#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D%20VK
+vless://3d737761-5951-462e-86c1-ff921d9f9999@176.97.75.22:8443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=images.apple.com&pbk=tZ-tscsitfHIe63_9FAqruCnJaNFhRaKCnR8G-e4-CM&sid=ae#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D
