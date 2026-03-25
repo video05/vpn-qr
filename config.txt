@@ -1,1 +1,1 @@
-vless://7d714031-76a9-4500-a132-27dd3307b16e@144.31.129.66:443?encryption=none&type=tcp&security=tls&sni=kinoau1.boevik-tut.org#%F0%9F%87%A7%F0%9F%87%BE%20Belarus%20%5B%2ACIDR%5D
+vless://1dba9869-86ca-451a-8992-57eaaffe8463@185.86.146.53:40443?encryption=none&type=grpc&security=reality&mode=gun&serviceName=max.ru&fp=chrome&sni=max.ru&pbk=U_cieMzlGC3K90m7zVZWCYov50H_pmDxgvixNcf2anc&sid=29&spx=%2F#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D%20VK
