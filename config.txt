@@ -1,1 +1,1 @@
-vless://b5eae60b-15a2-4ade-bb97-3d78e4791d94@185.86.145.81:40443?encryption=none&type=grpc&security=reality&mode=gun&serviceName=max.ru&fp=chrome&sni=max.ru&pbk=GwT3E8RckgNoqR09SFU1d2jtTSOglpVBda5OL0GUfgE&sid=1ed51e3181acb8&spx=%2F#%F0%9F%87%A8%F0%9F%87%A6%20Canada%20%5B%2ACIDR%5D%20VK
+vless://f67ec830-438b-49a0-bbb0-7f5b36d7a286@89.169.3.59:443?type=tcp&security=reality&flow=xtls-rprx-vision&fp=&pbk=PWz8fZpwpxY584yhVvpTeGEyKdPt-k3GYC6MQf9bKkY&sid=&sni=api-maps.yandex.ru&path=&host=&spx=/#%F0%9F%87%A6%F0%9F%87%B1%20Albania%20%5B%2ACIDR%5D
