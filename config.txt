@@ -1,1 +1,1 @@
-vless://1dba9869-86ca-451a-8992-57eaaffe8463@185.86.146.53:40443?encryption=none&type=grpc&security=reality&mode=gun&serviceName=max.ru&fp=chrome&sni=max.ru&pbk=U_cieMzlGC3K90m7zVZWCYov50H_pmDxgvixNcf2anc&sid=29&spx=%2F#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D%20VK
+vless://459e3be2-2196-4621-8a29-1afa26189a75@185.86.146.53:8443?encryption=none&type=xhttp&security=reality&host=max.ru&path=/&mode=stream-up&extra=null&fp=chrome&sni=max.ru&pbk=2yDkUjGy4MGQLibYSDDEQuHebbC6uUoXZSw43Tj3IgU&sid=41da&spx=/#%F0%9F%87%A8%F0%9F%87%BF%20Czechia%20%5B%2ACIDR%5D%20VK
