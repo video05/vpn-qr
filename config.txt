@@ -1,1 +1,1 @@
-vless://7d40449f-92df-4256-9607-679241455d49@95.85.243.114:2053?type=grpc&security=reality&fp=random&pbk=5DrNWT7Q8J_9XU8XJjJV0S9KF6OIM3cdg7MWsE9f-EI&sid=&sni=images.apple.com&mode=gun&serviceName=&authority=#%F0%9F%87%AA%F0%9F%87%AA%20Estonia%20%7C%20%F0%9F%8C%90%20%7C%20%5BIPv6%5D%20%5B%2ACIDR%5D
+vless://a47fb050-8477-4d86-9332-5f687f572d94@194.156.103.213:1888?type=tcp&security=reality&flow=xtls-rprx-vision&fp=&pbk=GaVpyGU5Xqyd5SYmchrCIajjTiXF69bmCnUdftmrwTM&sid=6b&sni=www.kernel.org&path=&host=#%F0%9F%87%A6%F0%9F%87%B2%20Armenia%20%5B%2ACIDR%5D
