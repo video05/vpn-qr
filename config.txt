@@ -1,1 +1,1 @@
-vless://3d535e29-2383-4272-bee7-ae7b5a4b112f@176.122.25.50:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=img.yandex.ru&pbk=zwxb4S-XaRk54UpQmRoeA9VzK97kKLPaMEPVeQwG5zs&sid=1ece20fd609e&spx=%2F#%F0%9F%87%A7%F0%9F%87%AA%20Belgium%20%7C%20%F0%9F%8C%90%20%5B%2ACIDR%5D
+vless://3d737761-5951-462e-86c1-ff921d9f9999@au-1.barryvpn.com:8443?encryption=none&flow=xtls-rprx-vision&fp=chrome&pbk=tZ-tscsitfHIe63_9FAqruCnJaNFhRaKCnR8G-e4-CM&security=reality&sid=93983a&sni=pass.qvinti.net&type=tcp#%F0%9F%87%A6%F0%9F%87%B9%20Austria%20%5B%2ACIDR%5D
