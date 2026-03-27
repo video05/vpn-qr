@@ -1,1 +1,1 @@
-vless://26e4b52a-77b2-4645-a7bd-fbcb39115fa5@176.122.25.50:443?flow=xtls-rprx-vision&encryption=none&type=tcp&security=reality&fp=chrome&sni=img.yandex.ru&pbk=zwxb4S-XaRk54UpQmRoeA9VzK97kKLPaMEPVeQwG5zs&sid=e16ee9f5&spx=%2F#%F0%9F%87%A7%F0%9F%87%AA%20Belgium%20%5B%2ACIDR%5D
+vless://0cfb8127-873d-46ca-9f31-f7918cdaaf11@xfer.mos-drywall.shop:443?type=xhttp&security=reality&encryption=none&fp=chrome&pbk=bPRyJNdN6kxTypxr65RjpadXexY5fztAecykcC-NrTM&sid=6a2f3e&sni=xfer.mos-drywall.shop&path=/devxhttp/&mode=packet-up#%F0%9F%87%AB%F0%9F%87%AE%20Finland%20%5B%2ACIDR%5D
