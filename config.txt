@@ -1,1 +1,1 @@
-vless://3824f134-a633-4318-9c2a-79887bf811a0@152.53.1.112:7443?security=reality&type=tcp&flow=xtls-rprx-vision&sni=chat.deepseek.com&fp=chrome&pbk=5QAO98ot2U7TcGs_f6EEaQjCzNOJLNHqPf6smYsdFVI&sid=be0ce047#%F0%9F%87%A6%F0%9F%87%B9%20Austria%20%7C%20%F0%9F%8C%90%20%7C%20%5BIPv6%5D%20%5B%2ACIDR%5D
+vless://8e986313-624d-4c2a-b4e0-ba6cf0d465bb@185.141.216.174:443?type=tcp&security=reality&encryption=none&flow=xtls-rprx-vision&fp=qq&pbk=JxwG7rAbNCd_C82p9K69AZDWh51fri2nm3wLHHrfyiw&sid=7755e972daf8eec8&sni=video.intfreed.ru#%F0%9F%87%A8%F0%9F%87%A6%20Canada%20%5B%2ACIDR%5D
